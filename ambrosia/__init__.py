@@ -38,7 +38,7 @@ from ambrosia.meshes import __all__ as _meshes_all
 from ambrosia.surfaces import __all__ as _surfaces_all
 from ambrosia.polyhedra import __all__ as _polyhedra_all
 # Synthesize an export list
-__all__ = ['bulb', 'camera', 'cube', 'cylinder', 'cone', 'image', 'scene', 'sphere','license']
+__all__ = ['bulb', 'camera', 'cube', 'cylinder', 'cone', 'image', 'scene', 'sphere','license','reset']
 for x in [ _decorators_all,_basics_all,_objects_all,_cameras_all,_lights_all,_parts_all,_meshes_all,_surfaces_all,_polyhedra_all]:
     __all__.extend(x)
 __all__.sort(key=lambda x: x.lower())
