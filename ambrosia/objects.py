@@ -421,7 +421,7 @@ class Environment(AmbrosiaObject):
         """Initialize the environment."""
         super().__init__(description=description)
         self.set('environment.imageFolder','images')
-        self.set('environment.projectFolder','/tmp')
+        self.set('environment.projectFolder','images')
         self.set('environment.libraryPath',[])
 
     def __copy__(self):

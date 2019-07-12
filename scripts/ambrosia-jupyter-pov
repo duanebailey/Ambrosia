@@ -2,7 +2,28 @@
 # Script to run POV on behalf of ambrosia.
 # Only switch controls whether mead renders stereo images.
 # set up paths
-source ambrosia-setup
+AMBROSIAHOME="$HOME"
+AMBROSIASCRIPTS_LOC="$AMBROSIAHOME/scripts"
+AMBROSIA_LOC="$AMBROSIAHOME"
+AMBROSIA_POV_LOC="$AMBROSIAHOME/scripts"
+AMBROSIA_VERSION="1"
+BASH_LOC=`type -p bash`
+CONVERT_LOC=`type -p convert`
+FFMPEG_LOC=`type -p ffmpeg`
+LESS_LOC=`type -p less`
+MAKEMOVIE=`type -p ffmpeg`
+MOVIEVIEW=`type -p ambrosia-open`
+OPEN_LOC=`type -p ambrosia-open`
+OS="Linux"
+POVRAY_LOC=`type -p povray`
+TEXTVIEW=`type -p ambrosia-open`
+VIEW=`type -p ambrosia-open`
+cat >/tmp/run.log <<EOF
+AMBROSIAHOME=$AMBROSIAHOME
+AMBROSIASCRIPTS_LOC=$AMBROSIASCRIPTS_LOC
+POVRAY_LOC=$POVRAY_LOC
+EOF
+PATH="$AMBROSIASCRIPTS_LOC":/usr/bin:/bin:$PATH
 
 #
 # Where povray and convert are found.  This differs on different machines.
@@ -10,9 +31,10 @@ POVRAY="$POVRAY_LOC -D "
 CONVERT="$CONVERT_LOC"
 COMPOSITE="$COMPOSITE_LOC"
 MOGRIFY="$MOGRIFY_LOC"
-if [ -e ~/.dirtyambrosia ]; then KEEP=yup; fi
-if [ -e ~/.debugambrosia ]; then DEBUG=yup; fi
-
+KEEP=yup
+DEBUG=yup
+RUNLOG=$HOME/images/run.log
+echo "POVRAY location is $POVRAY_LOC" >>$RUNLOG
 #
 # Parse command line options.
 # Usage: 
@@ -126,34 +148,33 @@ fi
 #
 # Name of the log file the contains errors from POV.
 # If this file is generated, there are errors to be reported to the user.
-#LOGFILE="${BASENAME}-$$.log"
 LOGFILE="${USER}-$$.log"
 # This is the name of the user-presented log file.
 TEMPF="${BASENAME}-$$.err"
 
 if [ -n "$DEBUG" ]; then
-  echo "Debug mode."
-  if [ -e ~/.debugambrosia ]; then echo "~/.debugambrosia exists"; fi
-  if [ -n "$BATCH" ]; then echo "Batch mode."; fi
-  echo "Temporary directory: \"${TMP}\""
-  echo "INI file: $INIFILE"
+  echo "Debug mode." >>$RUNLOG
+  if [ -e ~/.debugambrosia ]; then echo "~/.debugambrosia exists" >>$RUNLOG; fi
+  if [ -n "$BATCH" ]; then echo "Batch mode." >>$RUNLOG; fi
+  echo "Temporary directory: \"${TMP}\"" >>$RUNLOG
+  echo "INI file: $INIFILE" >>$RUNLOG
   if [ -n "$PIP" ]; then
-  echo "Picture-in-piecture mode."
-  echo "INI-large file: $INIFILELG"
-  echo "INI-small file: $INIFILESM"
-  echo "Gravity: $GRAVITY"
-  echo "Large input file: \"$INFILELG\""
-  echo "Small input file: \"$INFILESM\""
-  echo "POV large output file: \"$POVOUTFILELG\""
-  echo "POV small output file: \"$POVOUTFILESM\""
+  echo "Picture-in-piecture mode." >>$RUNLOG
+  echo "INI-large file: $INIFILELG" >>$RUNLOG
+  echo "INI-small file: $INIFILESM" >>$RUNLOG
+  echo "Gravity: $GRAVITY" >>$RUNLOG
+  echo "Large input file: \"$INFILELG\"" >>$RUNLOG
+  echo "Small input file: \"$INFILESM\"" >>$RUNLOG
+  echo "POV large output file: \"$POVOUTFILELG\"" >>$RUNLOG
+  echo "POV small output file: \"$POVOUTFILESM\"" >>$RUNLOG
   elif [ -n "$STEREO" ]; then
-  echo "Stereo mode."
-  echo "Left input file: \"$INFILEL\""
-  echo "Right input file: \"$INFILER\""
-  echo "POV left output file: \"$POVOUTFILEL\""
-  echo "POV right output file: \"$POVOUTFILER\""
+  echo "Stereo mode." >>$RUNLOG
+  echo "Left input file: \"$INFILEL\"" >>$RUNLOG
+  echo "Right input file: \"$INFILER\"" >>$RUNLOG
+  echo "POV left output file: \"$POVOUTFILEL\"" >>$RUNLOG
+  echo "POV right output file: \"$POVOUTFILER\"" >>$RUNLOG
   elif [ -n "$ISOMETRIC" ]; then
-    cat <<EOF
+    cat >>$RUNLOG <<EOF
 Isometric mode.
 Front input file: "$INFILEF"
 Right input file: "$INFILER"
@@ -167,11 +188,11 @@ POV column 1 intermediate file: "$POVOUTFILEC1"
 POV column 2 intermediate file: "$POVOUTFILEC2"
 EOF
   else
-    echo "Input file: \"$INFILE\""
-    echo "POV Output file: \"$POVOUTFILE\""
+    echo "Input file: \"$INFILE\"" >>$RUNLOG
+    echo "POV Output file: \"$POVOUTFILE\"" >>$RUNLOG
   fi
   echo "Output file: $OUTFILE"
-  echo "KEEP=>${KEEP}<"
+  echo "KEEP=>${KEEP}<" >>$RUNLOG
   if [ -n "$KEEP" ]; then 
     if [ -e ~/.dirtyambrosia ]; then echo "~/.dirtyambrosia exists."; fi
     echo "$TMP/ will be left as is."
