@@ -2,7 +2,7 @@
 # The ambrosia system is largely installed in the user's home directory.
 #export MANPATH=/usr/share/man:$MANPATH
 
-export AMBROSIAHOME="$HOME/summerWork/ambrosia"
+export AMBROSIAHOME="$HOME/BasicBinder/ambrosia"
 if [ "x$AMBROSIAHOME" = "x" ]; then
   echo "It does not look like you have ambrosia installed on this machine."
 else
