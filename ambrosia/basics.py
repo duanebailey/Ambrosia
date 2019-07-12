@@ -93,7 +93,7 @@ purple = (89/255,17/255,142/255) # Pantone PMS 267 (Williams)
 #purpleA2 = (109/255, 40/255, 170/255) # Pantone PMS 266 (Amherst, vibrant)
 
 try:
-   ambrosiaHome = os.environ['HOME']+'/ambrosia'
+   ambrosiaHome = os.environ['HOME']
 except KeyError:
    print("Your environment is not set up for cs109 (use source 109).")
    exit(1)
