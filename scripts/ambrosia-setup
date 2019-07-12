@@ -1,13 +1,5 @@
 #!/bin/bash
-if [ "x$AMBROSIAHOME" = "x" ]; then
-    if [ -e "$HOME/ambrosia" ]; then
-	AMBROSIAHOME="$HOME/ambrosia"
-	echo "Missing setting for AMBROSIAHOME set to $AMBROSIAHOME"
-    else
-	echo "Ambrosia does not appear to be installed on this machine."
-	exit 1
-    fi
-fi
+AMBROSIAHOME="$HOME"
 AMBROSIASCRIPTS_LOC="$AMBROSIAHOME/scripts"
 AMBROSIA_LOC="$AMBROSIAHOME"
 AMBROSIA_POV_LOC="$AMBROSIAHOME/scripts"
