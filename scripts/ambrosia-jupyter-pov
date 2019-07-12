@@ -61,7 +61,7 @@ IMGTYPE="png"
 # Directory that will take the pov file.
 # On machines where home directories are shared, this should be /tmp, which
 # (1) is always on a local disk, (2) is automatically cleared out on reboot.
-TMP="${TMP-/tmp}"
+TMP="${TMP-$HOME/images}"
 
 #
 # The base portion of default file names.
