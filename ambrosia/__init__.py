@@ -55,3 +55,4 @@ def reset():
     camera = Camera().subject(scene)
     image = camera.getImage()
 
+reset()
