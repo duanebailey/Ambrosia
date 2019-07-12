@@ -45,7 +45,17 @@ __all__.sort(key=lambda x: x.lower())
 
 ###############################################################################
 # Globals for scene setup
+sphere = None
+cube = None
+cylinder = None
+cone = None
+bulb = None
+scene = None
+camera = None
+image = None
+
 def reset():
+    global sphere,cube,cylinder,cone,bulb,scene,camera,image
     sphere = Sphere()
     cube = Cube()
     cylinder = Cylinder()
