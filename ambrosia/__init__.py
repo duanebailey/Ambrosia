@@ -45,12 +45,13 @@ __all__.sort(key=lambda x: x.lower())
 
 ###############################################################################
 # Globals for scene setup
-sphere = Sphere()
-cube = Cube()
-cylinder = Cylinder()
-cone = Cone()
-bulb = Light().color(white)
-scene = Group().add(bulb,translate(0,300,-300))
-camera = Camera().subject(scene)
-image = camera.getImage()
+def reset():
+    sphere = Sphere()
+    cube = Cube()
+    cylinder = Cylinder()
+    cone = Cone()
+    bulb = Light().color(white)
+    scene = Group().add(bulb,translate(0,300,-300))
+    camera = Camera().subject(scene)
+    image = camera.getImage()
 
