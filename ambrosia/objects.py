@@ -475,7 +475,7 @@ class Environment(AmbrosiaObject):
         absolute = file[0][:1] == '/'
         folder = [] if absolute else [ self.getImageFolder() ]
         absolute = absolute or (folder[0][:1] == '/')
-        here = [] if absolute else [ os.getcwd() or "/tmp" ]
+        here = [] if absolute else [ os.getcwd() or "/home/jovyan/images" ]
         return '/'.join(here+folder+file)
 
     def recursionLimit(self,n=1000):

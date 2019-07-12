@@ -237,7 +237,7 @@ class Image(AmbrosiaObject):
             # determined by the current file name (which defaults to user),
             # the current project folder (which defaults to /tmp),
             # and the current directory (which is found in cwd)
-            here = os.getcwd() or "/tmp"
+            here = os.getcwd() or "/home/jovyan/images"
             user = os.getenv("USER") or "untitled"
             file = self.getFileName()
             file = (isinstance(file,str) and (file != "") and file) or user
@@ -245,10 +245,10 @@ class Image(AmbrosiaObject):
             absolute = file[0][:1] == '/'
             folder = environment.getProjectFolder()
             if not (isinstance(folder,str) and folder):
-                folder = '/tmp'
+                folder = '/home/jovyan/images'
             folder = [] if absolute else [ folder ]
             absolute = absolute or (folder[0][:1] == '/')
-            here = [] if absolute else [os.getcwd() or "/tmp"]
+            here = [] if absolute else [os.getcwd() or "/home/jovyan/images"]
             result =  '/'.join(here+folder+file)
             return result
             
@@ -280,7 +280,7 @@ class Image(AmbrosiaObject):
             return ''
 
     def _POV_shootSuffix(self,sfx,*args):
-        pov.open("/tmp/"+os.getenv("USER")+sfx+".ini")
+        pov.open("/home/jovyan/images/"+os.getenv("USER")+sfx+".ini")
         self._POV_proof()
         pov.close()
 
@@ -473,11 +473,11 @@ dot-product of the two vectors.  Typically, we set the up vector to (0,1,0).
         i = self.getImage()
         fnsw = i.getFileNameSwitches()
         # Dump the .ini file
-        pov.open("/tmp/{}.ini".format(os.getenv("USER")))
+        pov.open("/home/jovyan/images/{}.ini".format(os.getenv("USER")))
         i._POV_shoot(*args)
         pov.close()
         # Dump the .pov file
-        pov.open("/tmp/{}.pov".format(os.getenv("USER")))
+        pov.open("/home/jovyan/images/{}.pov".format(os.getenv("USER")))
         self._POV_proof(*args)
         pov.close()
         script = executableDir + "ambrosia-jupyter-pov"
@@ -583,16 +583,16 @@ class StereoCamera(Camera):
         i = self.getImage()
         fnsw = i.getFileNameSwitches()
         # Dump the .ini file
-        pov.open("/tmp/{}.ini".format(os.getenv("USER")))
+        pov.open("/home/jovyan/images/{}.ini".format(os.getenv("USER")))
         i._POV_shoot(*args)
         pov.close()
         vsw = "" if i.getViewResult() else " --batch"
         i._POV_shoot(*args)
-        lf = pov.open("/tmp/{}-left.pov".format(os.getenv("USER")))
+        lf = pov.open("/home/jovyan/images/{}-left.pov".format(os.getenv("USER")))
         self.pos(leftPos)
         self._POV_proof(*args)
         pov.close()
-        rf = pov.open("/tmp/{}-right.pov".format(os.getenv("USER")))
+        rf = pov.open("/home/jovyan/images/{}-right.pov".format(os.getenv("USER")))
         self.pos(rightPos)
         self._POV_proof(*args)
         pov.close()
@@ -638,10 +638,10 @@ class PIPCamera(Camera):
         vsw = "" if i.getViewResult() else " --batch"
         i._POV_shootSuffix("-large",*args)
         ii._POV_shootSuffix("-small",*args)
-        pov.open("/tmp/"+os.getenv("USER")+"-large.pov")
+        pov.open("/home/jovyan/images/"+os.getenv("USER")+"-large.pov")
         self._POV_proof(*args)
         pov.close()
-        pov.open("/tmp/"+os.getenv("USER")+"-small.pov")
+        pov.open("/home/jovyan/images/"+os.getenv("USER")+"-small.pov")
         icam._POV_proof(*args)
         pov.close()
         docmd(executableDir + 'ambrosia-pov --pip --gravity "{}" {}{}'.format(self.getInsetPosition(),fnsw,vsw))
@@ -677,19 +677,19 @@ class IsometricCamera(Camera):
         fnsw = i.getFileNameSwitches()
         vsw = "" if i.getViewResult() else " --batch"
         i._POV_shoot(*args)
-        pov.open("/tmp/"+os.getenv("USER")+"-ortho.pov")
+        pov.open("/home/jovyan/images/"+os.getenv("USER")+"-ortho.pov")
         self.pos(orthoPos)
         self._POV_proof(*args)
         pov.close()
-        pov.open("/tmp/"+os.getenv("USER")+"-right.pov")
+        pov.open("/home/jovyan/images/"+os.getenv("USER")+"-right.pov")
         self.pos(rightPos)
         self._POV_proof(*args)
         pov.close()
-        pov.open("/tmp/"+os.getenv("USER")+"-top.pov")
+        pov.open("/home/jovyan/images/"+os.getenv("USER")+"-top.pov")
         self.pos(topPos)
         self._POV_proof(*args)
         pov.close()
-        pov.open("/tmp/"+os.getenv("USER")+"-front.pov")
+        pov.open("/home/jovyan/images/"+os.getenv("USER")+"-front.pov")
         self.pos(frontPos)
         self._POV_proof(*args)
         pov.close()

@@ -2,6 +2,7 @@
 # Script to run POV on behalf of ambrosia.
 # Only switch controls whether mead renders stereo images.
 # set up paths
+RUNLOG=$HOME/images/run.log
 AMBROSIAHOME="$HOME"
 AMBROSIASCRIPTS_LOC="$AMBROSIAHOME/scripts"
 AMBROSIA_LOC="$AMBROSIAHOME"
@@ -17,7 +18,7 @@ OPEN_LOC=`type -p ambrosia-open`
 OS="Linux"
 POVRAY_LOC=`type -p povray`
 VIEW=`type -p ambrosia-open`
-cat >/tmp/run.log <<EOF
+cat >$RUNLOG <<EOF
 AMBROSIAHOME=$AMBROSIAHOME
 AMBROSIASCRIPTS_LOC=$AMBROSIASCRIPTS_LOC
 POVRAY_LOC=$POVRAY_LOC
@@ -32,7 +33,6 @@ COMPOSITE="$COMPOSITE_LOC"
 MOGRIFY="$MOGRIFY_LOC"
 KEEP=yup
 DEBUG=yup
-RUNLOG=$HOME/images/run.log
 echo "POVRAY location is $POVRAY_LOC" >>$RUNLOG
 #
 # Parse command line options.
