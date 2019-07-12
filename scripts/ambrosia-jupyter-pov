@@ -16,7 +16,6 @@ MOVIEVIEW=`type -p ambrosia-open`
 OPEN_LOC=`type -p ambrosia-open`
 OS="Linux"
 POVRAY_LOC=`type -p povray`
-TEXTVIEW=`type -p ambrosia-open`
 VIEW=`type -p ambrosia-open`
 cat >/tmp/run.log <<EOF
 AMBROSIAHOME=$AMBROSIAHOME
@@ -238,7 +237,7 @@ You should look for hints on syntax errors near the phrase "Parsing", below.
 EOF
      echo "No image was generated." >>"${TEMPF}"
    fi
-   $TEXTVIEW "${TEMPF}" &
+   cat $TEMPF >>$RUNLOG
 else # we assume the pov rendered correctly
      #
      # we need to do a conversion
@@ -287,7 +286,7 @@ You should look for hints on syntax errors near the phrase "Parsing", below.
 EOF
      echo "No image was generated." >>"${TEMPF}"
    fi
-   $TEXTVIEW "${TEMPF}" &
+   cat $TEMPF >>$RUNLOG
 else # we assume the pov rendered correctly
      #
      # we need to do a conversion
@@ -339,7 +338,7 @@ You should look for hints on syntax errors near the phrase "Parsing", below.
 EOF
      echo "No image was generated." >>"${TEMPF}"
    fi
-   $TEXTVIEW "${TEMPF}" &
+   cat ${TEMPF} >>$RUNLOG
 else # we assume the pov rendered correctly
      #
      # we need to do a conversion
@@ -353,13 +352,14 @@ else # we assume the pov rendered correctly
      SUCCESS=yup
 fi
 else
-# The command line.
+# The TYPICAL command line.
 # This command generates png files (+FN) and all errors (+GA) to logfile.
 # It bootstraps settings from $INIFILE.
 # echo "(cd "${TMP}"/; time $POVRAY 2>/dev/null +I"${INFILE}" +FN +O"${POVOUTFILE}" +GA"${LOGFILE}" "${INIFILE}")"
-echo -n `date +"%H:%M:%S"`"..."
+echo -n `date +"%H:%M:%S"`"..." >>$RUNLOG
+echo $POVRAY 2>/dev/null +I"${INFILE}" +FN +O"${POVOUTFILE}" +GA"${LOGFILE}" "${INIFILE}" >>$RUNLOG
 (cd "${TMP}"/; $POVRAY 2>/dev/null +I"${INFILE}" +FN +O"${POVOUTFILE}" +GA"${LOGFILE}" "${INIFILE}")
-echo `date +"%H:%M:%S"`"]"
+echo `date +"%H:%M:%S"`"]" >>$RUNLOG
 #
 # We now determine if there were errors.
 # If there were, generate a tailored error file, presented in a text browser.
@@ -367,7 +367,7 @@ if [ \! -e "${POVOUTFILE}" ] ; then
    if [ \! -e "${LOGFILE}" ]; then
      #
      # There were errors, but no log file, for some reason.  Give help.
-     cat <<EOF >"${TEMPF}"
+     cat <<EOF >>$RUNLOG
 For some reason, Ambrosia generated neither an image nor an error file.
 This could be because:
   1. Because of a problem in Python, or
@@ -378,16 +378,16 @@ EOF
      # We assume there were POV errors reported in the log file.
      # We construct a tailored log file that helps the user focus on
      # the particular problem.
-     cat - "${LOGFILE}" <<EOF >"${TEMPF}"
+     cat - "${LOGFILE}" <<EOF >>$RUNLOG
 THERE WERE ERRORS when Ambrosia attempted to render your image using POV.
 Below is the log of this rendering.
 
 You should look for hints on syntax errors near the phrase "Parsing", below.
 -------------------------------------------------------------------------
 EOF
-     echo "No image was generated." >>"${TEMPF}"
+     echo "No image was generated." >>$RUNLOG
    fi
-   $TEXTVIEW "${TEMPF}" &
+   cat $TEMPF >>$RUNLOG
 else # we assume the pov rendered correctly
    if [ "$IMGTYPE" \!= "png" ]; then
       #
