@@ -1,0 +1,13 @@
+[[Category:Ambrosia]]
+This page collects the models we've seen in class.
+== Simple Models ==
+; [[Media:Snowman.py|Snowman.py]] : This was the culmination of our first experiment with modeling during the first week of class.
+[[Image:Models-snowman.png|thumb|right|From Snowman.py]]
+Things to note:
+* The model includes a comment with author's name.
+* There is only one snowman head, but the carrot can be colored differently as you add multiple heads (see code)
+
+<br clear="all">
+
+; [[Media:TinkerToy.py|TinkerToy.py]] : This is our friend Mort.  He's suffered some serious injury over the years.  Here, for example, he has no head:
+[[Image:Models-TinkerToy.png|thumb|left|Mort, from TinkerToy.py]]

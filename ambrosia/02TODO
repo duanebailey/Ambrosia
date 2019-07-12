@@ -1,0 +1,47 @@
+* DOCUMENTATION [Duane]
+
+* Web presence [Chris L.]
+  reference page
+  example pages
+  wiki links?
+
+* Add a left-handed/right-handed switch.
+  Can the use of such a switch be isolated to the basic linear algebra section?
+
+* It would be nice if lights, like cameras, could be repositioned under xform
+
+* Shadowless spot lights seem not to work.
+
+* Check that all attribute functions return some value: either self, or
+  the value they're retrieving.
+
+* Push the selection predicates into one place.  Perhaps context?
+
+* POV object is accessed independently of environment (see lights, for example)
+  Is this what we want?
+
+* Unify shapes of values.
+  The COI and pos primitives take a 3-vector.
+  The normal (of the Plane class), or dimensions (of the Cube class) take
+  3 values.
+  Which is better?
+
+* Should we change the messages that are used with CSG grouping constructs:
+  Groups:
+   add,add,add
+  Intersection:
+   add,add,add??
+  Difference:
+   add,remove,remove,...??
+
+* Make sure no POV methods are visible externally.
+
+* Should extrude and sweep be lifted to an object status?
+  They would be a mesh-like object, but only add profile, or add tranform.
+
+  lamp = Sweep().profile(p).steps(3)
+
+  worm = Extrude().front(p).extrudeWith(translate(0,0,-100))
+  worm = Extrude().front(p).extrudeTo(backp)
+
+  Both could have caps/nocaps.

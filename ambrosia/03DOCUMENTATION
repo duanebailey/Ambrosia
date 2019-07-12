@@ -1,0 +1,28 @@
+DOCUMENTATION EXPECTATIONS
+
+In order to be as useful as possible, it is important that we provide
+high quality documentation that allows students to explore, experiment,
+understand, and abstract the basic functionality of the system.
+
+Important to this are:
+ 0. Installation and distribution details.
+ 1. Significant Python-native documenation of all features.
+    Carefully written docstrings for modules, classes, and methods.
+    All constants and global variables included in module documentation.
+ 2. A brief, solid, language reference page, linking to simple examples.
+    The motivation for this is the success of the Processing language
+    reference pages.
+ 3. A deep set of examples.
+    A series of examples that push the student to a deeper understanding of
+    how increasingly complex modeling features and programming paradigms might
+    be used to model scenes.
+ 4. A broad set of problems.
+    Included, here, are laboratory exercises, in a standard format, that might
+    be used to exercise student understanding as the semester progresses.
+    The ideal would be 3-4 labs choices for each of 10 lab meetings.  For
+    schools with semesters, this might correspond to their normal lab schedule.
+    For quarter or summer programs, this might provide the basis for a more
+    intensive laboratory experience.
+[5. Lectures.
+    A model series of lecture outlines that might help to bootstrap a
+    college-level or AP course at a new institution.]

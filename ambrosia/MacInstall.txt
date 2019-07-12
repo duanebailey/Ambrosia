@@ -1,0 +1,169 @@
+INSTRUCTIONS ON HOW TO INSTALL ambrosia ON A MAC (El Capitan)
+ [Instructions for other versions, including Sierra, may require more care.]
+
+BEFORE YOU BEGIN, you need to have the following:
+ * The password to your machine.
+   This is the same password you use to give permission to install normal
+   applications and packages on a Mac.
+ * Your Apple ID & Password.
+   This is needed because we will have to download additional software from
+   Apple.  This software is free, but not typically used, so we need to
+   install it under your Apple ID.  Getting an Apple ID is easy and free.
+   (It's your iPhone ID & password for new apps, as well.)
+ * 10 GigaBytes of space on the hard drive.  You can probably get by with
+   less, but I've not tried installing with less.
+ * A power cord.
+   This procedure will take a while and should not be interrupted.  Keep
+   your machine plugged in while you're doing the install.  It will take,
+   perhaps, an hour of time.
+
+OVERVIEW
+If you're using ambrosia, you're using python.  If you're using python, you're
+a programmer.  Programmers need lots of little pieces of software that are
+not typically installed on most computers.  What we do here will do the
+following (all of which is free):
+   *  Install XCode.  These are tool-building programming tools.
+      you need to have XCode installed to build other tools (like python3).
+   *  Install MacPorts.  This allows you to, from the command line, install
+      a diversity of thousands of new languages and systems.  A no-brainer.
+   *  Install Python, verion 3.  All modern computers (and many phones and
+      tablets) include Python, version 2.  It's good, but not great.  Version
+      3 is a modern language that supports the construction of big systems,
+      like ambrosia.  Thus, the need for 'python3'.
+   *  Install ImageMagick.  A wonderful suite of commandline tools that allow
+      you to convert images from one type to another, to create thumbnails,
+      stereo views, image compositing, etc.  This is used heavily by sweet
+      ambrosia.
+   * Install ffmpeg.  A collection of commandline tools that allow
+      you to manipulate video formats.  We'll need this for animation.
+   * Install POV.  The Persistance of Vision ray tracer is core of the
+      technology of converting models to images.  We need this!
+   * Install emacs.  I have know idea what you're using for an editor, but
+      emacs is the Swiss Army knife of editors, the Land Rover of programming
+      tools, the Twinkie of any serious programmer's eye.  Install it & don't
+      look back.
+   * Install ambrosia.  Written at Williams, you need to bring this in to
+      do everything we do in 109.  This is open software, but, for the moment,
+      it requires you have access to an account in CS (you do!). Eventually, I
+      expect to see this installed in K-12 classrooms so everyone can see
+      what this is about.  Interested?  See me.
+
+INSTRUCTIONS.
+I am assuming you're using El Capitan (10.11.5+).  (You can determine your
+version from the "About This Mac" item under the Apple menu.)  If you don't
+have that installed, these instructions will likely work, but you'll need to
+be watchful for alternatives to the kits I suggest here.
+
+I. INSTALL XCODE
+It's unlikely that you have XCode.  You can check in your Applications.  If you
+see XCode (down at the bottom), you can skip at least to step I.C and pick
+up from there.
+
+ A. Plug your machine into a good power source.  If you have an ethernet cable,
+    using it will significantly improve the speed of downloads.
+ B. Go to the AppStore (look under the Apple menu), or type "AppStore" in the
+    spotlight search box at the top right of your screen:
+  - In the AppStore app, type "XCode" (don't include quotes) in the search box.
+  - Near the XCode logo, press "get", then "install app".  It will ask for
+    your Apple ID and password; provide them and press "buy" (it *is* free).
+  - To monitor the download, you go to the "Store/Purchased" (the item
+    "Purchased" in the "Store" menu) and scroll down to the bottom.  You'll
+    see the progress bar for XCode.  It will take up 4+ billion bytes of space.
+    [6 minutes; your machine may take longer, depending on age, time of day,
+     and location]
+  - After it has been installed, dismiss the AppStore window.
+ C. Add "Terminal" (look in Applications/Utilities) to your dock.  We'll need
+    to use this quite a bit.
+ D. Open the Terminal window.
+  - Type
+      xcode-select --install
+    This will turn on the coding tools, after you agree to the license.
+    Press "install" if asked to install the "commandline developer tools".
+    Type "Agree" when asked and hit return.
+    [1 minute]
+    Press "Done".
+  - Type
+      sudo xcodebuild -license
+    provide the system password when asked ("sudo" means: do something as
+    the Super User; it needs a password) and follow instructions to agree.
+
+II. INSTALL MACPORTS
+It's unlikely you have this, especially if you didn't have XCode.  Let's
+install it.
+ A. In a browser, go to
+      http://macports.org
+    Under "getting started", press "installation".
+    Under "Quickstart" press:
+      * OS X 10.11 El Capitan
+    This downloads a package ending in .pkg to wherever you typically
+    download things (perhaps your Downloads folder?).
+ B. Double click on the MacPorts-....pkg and follow the instructions to
+    install.  You'll need to provide passwords and agree to terms.
+    Close the package installer when finished. [1 minute]
+ C. Close the Terminal window and re-open it. (Quit, then re-click Terminal)
+    - Type
+        sudo port -v selfupdate
+      This takes 1 minute and should indicate the "port tree has been updated".
+
+III. INSTALL PYTHON3
+This is getting good.  You're on a roll!
+ A. In the Terminal window, type:
+      sudo port install python36
+    (Provide your computer's password if asked.)
+    [1 minute]
+ B. Type
+      sudo ln -s /opt/local/bin/python3.6 /opt/local/bin/python3
+      sudo ln -s /opt/local/bin/pydoc3.6 /opt/local/bin/pydoc3
+    These create shorthands for "python3" and "pydoc3" which use version 3.6.
+
+IV. INSTALL IMAGEMAGICK.
+Image whacking tools.  All needed for keeping everything in .png format.
+ A. In the Terminal window, type:
+      sudo port install ImageMagick
+    Note the unusual spelling.
+
+    This installs a number of items useful to manipulating images.
+    The title of your window will flicker: cool.
+    [9 minutes]
+
+V. INSTALL FFMPEG.
+These are video whacking tools.  We'll be making movies.
+ A. In the Terminal window, type:
+      sudo port install ffmpeg
+    [8 minutes]
+
+VI. INSTALL POV.
+This is the ray tracer (wouldn't that be a great pen name?!).
+ A. Yup, in the Terminal window, type:
+      sudo port install povray
+    [5 minutes]
+
+VII. INSTALL EMACS.
+ A. In the Terminal, type:
+      sudo port install emacs
+    This will install emacs, version 24, in case you don't have emacs already.
+    [3 minutes?]
+    
+VIII. INSTALL ambrosia
+This section requires considerable care.  Please read the instructions
+very carefully, double check commands you type, and contact me if you have
+problems.
+ A. We're going to get a copy of ambrosia which you will install in a
+    folder in your home directory, called 'ambrosia'.  Here, we collect
+    a copy of the ambrosia system using your Computer Science user name
+    and password.
+    In the terminal window, type the following command, replacing 18xyz
+    with your CS username:
+      git clone ssh://18xyz@fuji.cs.williams.edu/Volumes/Courses/cs109/ambrosia ~/ambrosia
+    You will be asked for your CS password.  Provide it.
+    This will take less than a minute, and will create the 'ambrosia' folder.
+    Please don't move this, or the system will not work.
+ B. Now, we'll copy the '109' command into the system.  Here, you may be
+    asked for local system password:
+      sudo cp ~/ambrosia/scripts/109 /opt/local/bin
+ C. Make sure the command is working:
+      hash -r
+      source 109
+    This shoudl give you the familiar message:
+      You're set up for 109.
+    Indeed, you are!

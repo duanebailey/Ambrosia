@@ -1,0 +1,19 @@
+[[Category:Ambrosia]]
+Ambrosia is the a simple, academic modeling system built atop the Python
+programming language.  In a typical Ambrosia session, the modeler describes
+a scene, positions lights and cameras, and uses the cameras to take pictures
+or render images.  Ambrosia has simple facilities for rendering movies, as
+well.
+
+This wiki provides a number of pages of documentation that describe 
+the features of Ambrosia.  Most documentation is supported with examples
+that demonstrate typical usage.
+
+==Ambrosia Resources==
+* [[:Category:Ambrosia|Ambrosia-related pages]] on this server.
+* The [[Ambrosia Reference]].
+* A [[Materials|Materials Sampler]].
+* The [[Ambrosia Tutorial]].
+* The [[Ambrosia Cookbook]].
+* The [[Cheat Sheet]] repository.
+

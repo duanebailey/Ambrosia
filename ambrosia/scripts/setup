@@ -1,0 +1,30 @@
+# This file sets up the local environment.
+# The ambrosia system is largely installed in the user's home directory.
+#export MANPATH=/usr/share/man:$MANPATH
+
+export AMBROSIAHOME="$HOME/summerWork/ambrosia"
+if [ "x$AMBROSIAHOME" = "x" ]; then
+  echo "It does not look like you have ambrosia installed on this machine."
+else
+  # Set paths necessary to find (1) shell scripts and (2) ambrosia's py files.
+  export PATH=.:$AMBROSIAHOME/scripts:$PATH
+  export PYTHONPATH=.:$AMBROSIAHOME:$PYTHONPATH
+  # Remove any indications of debugging from previous runs.
+  rm -f $HOME/.dirtyambrosia $HOME/.debugambrosia
+  echo "You're all set to use ambrosia."
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

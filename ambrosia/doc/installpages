@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+MAINTDIR=/Volumes/courses/wiki/maintenance
+OWN=Bailey
+PAGEDIRS="pages williams"
+for dir in ${PAGEDIRS}; do
+  for x in $dir/*.page; do
+    echo "Importing page $x."
+    t=`basename $x .page`
+    php ${MAINTDIR}/importTextFile.php --user $OWN --norc --title $t $x
+  done
+done
+
+for pd in ${PAGEDIRS}; do
+    dir=${pd}/images
+    if [ -e $dir ]; then 
+       echo "Importing images from $dir"
+       php ${MAINTDIR}/importImages.php --user $OWN --comment-ext .cmt ${dir}
+    fi
+done

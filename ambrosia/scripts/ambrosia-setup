@@ -1,0 +1,28 @@
+#!/bin/bash
+if [ "x$AMBROSIAHOME" = "x" ]; then
+    if [ -e "$HOME/ambrosia" ]; then
+	AMBROSIAHOME="$HOME/ambrosia"
+	echo "Missing setting for AMBROSIAHOME set to $AMBROSIAHOME"
+    else
+	echo "Ambrosia does not appear to be installed on this machine."
+	exit 1
+    fi
+fi
+AMBROSIASCRIPTS_LOC="$AMBROSIAHOME/scripts"
+AMBROSIA_LOC="$AMBROSIAHOME"
+AMBROSIA_POV_LOC="$AMBROSIAHOME/scripts"
+AMBROSIA_VERSION="1"
+BASH_LOC=`type -p bash`
+CONVERT_LOC=`type -p convert`
+FFMPEG_LOC=`type -p ffmpeg`
+LESS_LOC=`type -p less`
+MAKEMOVIE=`type -p ffmpeg`
+MOVIEVIEW=`type -p ambrosia-open`
+OPEN_LOC=`type -p ambrosia-open`
+OS="Linux"
+POVRAY_LOC=`type -p povray`
+TEXTVIEW=`type -p ambrosia-open`
+VIEW=`type -p ambrosia-open`
+
+PATH="$AMBROSIASCRIPTS_LOC":/usr/bin:/bin:$PATH
+

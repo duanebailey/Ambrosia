@@ -1,0 +1,2 @@
+The following models are broken:
+ image_materials.py - see log files - isometric camera does not generate; ok with camera and with individual orthographics 

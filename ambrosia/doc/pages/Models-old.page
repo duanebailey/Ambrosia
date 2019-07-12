@@ -1,0 +1,386 @@
+[[Category:Ambrosia]]
+This page depicts images from a variety of models, many of whom are presented in class.
+== Simple Models ==
+; [[Media:Snowman.py|Snowman.py]] : This was the culmination of our first experiment with modeling during the first week of class.
+[[Image:Models-snowman.png|thumb|right|From Snowman.py]]
+Things to note:
+* The model includes a comment with author's name.
+* There is only one clown model, whose eyes are blue and green, whose nose is white.  The clown appears twice in two different
+materials: redPlaster and whitePlaster.
+* Change the blackground from cyan to white with
+ (tell image (background white))
+
+; [[Media:table.py|table.py]] : This model is one of the first in 2009.  The central object is a "table" that is 65 tall, 400 wide, 100 deep. [[Image:bailey-table.png|thumb|right|From Table.py]] It has four legs.  Here, they are all red plaster, but one could comment out the '''material''' message in the leg definition and provide a unique material for each leg as it is added to the table group.  The legs are cones, but could be any type of primitive object ('''sphere''' etc.).  Once the table has been constructed, several can be added to the scene.  They have different table-top colors because the material for the top was not specified during table construction; instead, each table's top material is determined at '''add'''-time.
+
+; [[Media:TinkerToys.py|TinkerToys.py]] : This model invested an "engineering" approach to building models: break the model into primitive components, and build the entire object ''bottom up''.
+[[Image:bailey-tinkerToys.png|thumb|left|From TinkerToys.py]]
+Things to note (see the lecture of February 12, as well):
+* Every part is modeled near the origin.
+* Each part is a new object derived from a class (Cube, Cylinder, etc.); as opposed to the previous model, where we made use of the found or ''default'' objects of our environment: cube, sphere, etc.
+* Mort is composed of objects that were once large, but has been scaled down to be easily viewed by the
+camera in standard position.
+* Always, always, always: rotate first, translate second.
+
+<br clear=all>
+
+== CSG Models ==
+; [[Media:GoStone.py|GoStone.py]] : A simple model showing how an Intersection can be used to trim the otherwise sharp edges from a stone piece used in the game of Go. [[Image:Examples-goStone.png|thumb|right|A stone used in go.]]
+
+<br clear=all>
+; [[Media:TeapotRattle.py|TeapotRattle.py]] : A model that uses Group, Difference, and Intersection to generate a child's rattle with a silver teapot on the interior.  Each primitive object involved is made from a distinct material to help demonstrate the action of each of the operations. [[Image:Examples-teapotRattle.png|left|thumb|The renderer's rattle.]]
+
+<br clear=all>
+; [[Media:StoneWork.py|StoneWork.py]] : A model that constructs a complex "antimatter" structure that can be used to build molding or facadework.  This view is end-on.  The material is a quick-and-dirty sandstone plaster. [[Image:Examples-stoneWork.png|right|thumb|Stonework detail.]]
+
+<br clear=all>
+; [[Media:Goodrich.py|Goodrich.py]] : A model motivated by the windows of Goodrich hall - shapes with constant diameter. [[Image:Examples-goodrich.png|right|thumb|Goodrich architectural detail.]]
+
+<br clear=all>
+; [[Media:MotherAndChild.py|MotherAndChild.py]] : A model that uses CSG to generate a ''Mother and Child'' sculpture. [[Image:Examples-motherAndChild.png|left|thumb|Mother and Child]] Proportion, positioning, and lighting adjusted after class.  Notice, by the way, that this child cannot be sculpted in stone since it floats within the mother.  Model makes use of a Difference with a mirrorMat cylinder to locate child appropriately.
+
+<br clear=all>
+; [[Media:RaichUmbrella.py|RaichUmbrella.py]] : A model that uses CSG to generate an umbrella.  [[Image:Examples-raichUmbrella.png|right|thumb|A purple plastic umbrella.]]This model adapted from [[Susan Raich|Susan Raich's]] "Flight of the Umbrellas" model.
+<br clear=all>
+
+== Sweep &amp; Extrude Models ==
+; [[Media:Wedge.py|Wedge.py]] : A (very) simple model constructing a wedge.  It also makes use of an isometric camera that produces drafting-style images. [[Image:Examples-wedge.png|right|thumb|Wedge]]
+
+<br clear=all>
+; [[Media:Planters.py|Planters.py]] : The planter and flower pot from our sweep and extrude lab. [[Image:Examples-Planters.png|right|thumb|A planter (left) and flowerpot (right) from lab]]
+<br clear=all>
+; [[Media:HexWrench.py|HexWrench.py]] : Nut constructed by subtracting a hex wrench. [[Image:Examples-Nut.png|left|thumb|A nut constructed using an extruded hex wrench.]]
+<br clear=all>
+
+; [[Media:Planters.py|Planters.py]] : The planter and flower pot from our sweep and extrude lab. [[Image:Examples-Planters.png|right|thumb|A planter (left) and flowerpot (right) from lab]]
+<br clear=all>
+
+== Uniform and SurfaceImage Materials &amp; Spotlights ==
+; [[Media:MaterialsStudy.py|MaterialsStudy.py]] : A model with three objects made of three different materials.  The foremost object is a transparent cyan material, the middle a green plaster, and the backing object a shiny, opaque, blue material.  In class the transparent object was not so obviously transparent, but it was because it was a sphere, which warps the environment considerably.  Here, I've replaced it with a cube, or square prism, which makes it more obviously transparent.  [[Image:Examples-materialsStudy.png|right|thumb|A study of uniform materials.]]
+
+; [[Media:Lincoln.py|Lincoln.py]] : This model constructs a simple mesh with a single square polygon.  The polygon has uv-coordinates associated with each xyz-coordinate.  The uv-coordinate system helps to identify how images are mapped onto the surface of the mesh: The width of the image is mapped using the u-coordinate, the height is mapped using the v-coordinate.  The image we used here is [[:Image:Lincoln.png|Lincoln.png]] which must be stored in a folder called "Images" off your home directory.
+
+[[Image:Examples-Lincoln.png|thumb|left|French's Lincoln, under a light.]] This image was very dark in the classroom (a poor projector); so we shined a spotlight on the origin (roughly Lincoln's right eye).  The spotlight has a center of interest at the origin, and can be moved about, much like the camera.  Like all spotlights, this spot emits a cone of light whose angle is twice what we think of as a "radius" (measured in degrees).  The edges of the light are normally hard (as when light shines from a single point); but may be softened by adding a "falloff" parameter - an outer cone where the light fades to black.  The thickness of this outer cone is the falloff angle, measured in degrees.
+
+<br clear=all>
+== Surface vs. Grain Imaged Materials ==
+[[Media:ImageMaterials.py|ImageMaterials.py]]
+[[Image:Examples-imageMaterials.png|thumb|right|Surface and grain imaged cubes.]]
+[[Image:duaneSunflower.png|thumb|left|Duane's sunflower image used in this model.  Place in your Images folder.]] There are two types of materials that make use of images: surface images and grain images.  Surface images are materials constructed using the surfaceImage message.  The image is mapped onto or wrapped around the object at hand.  It works on most finite objects.  Planes, for example, cannot be easily surface mapped (at this point) in Ambrosia.
+
+
+Grain images are images that are used to describe the end-grain of a material from which the object is sculpted.  The grain runs along the z-axis and is 100x100 when the object is first assigned the material.
+<br clear=all>
+
+== Camera and Image Manipulation ==
+[[Media:Cameras.py|Cameras.py]]
+[[Image:Examples-camera1.png|thumb|left|Image with heavy aliasing.]]
+[[Image:Examples-camera2.png|thumb|right|Image with heavy anti-aliasing.]]
+In this model we construct two different cameras, and we ask each for the Image that they use.  Every camera, when constructed, gets a dedicated Image.  You can, if you want, have several cameras share the same Image description.
+
+<br clear=all>
+== The Torus: the Mighty Donut Builder ==
+[[Media:DonutBagel.py|DonutBagel.py]]  
+[[Image:Examples-donutBagel.png|thumb|right|A donut (red) and a bagel (blue).  Not artistic, but tasty.]]
+This simple model demonstrates the construction of two important food groups: donuts and bagels.  Both are examples of the Torus class.  Torus geometry is determined by two parameters: the minor radius (the radius of the cross-section of the bready section); and the major radius (together with the minor radius, the radius of the object).  When minor smaller than major, we get donuts with holes; when they are the same we get bagels.  Be aware that, like all objects, you may send transformations, including scale commands to the object at the time of its construction.  The bagle has an elliptical cross-section, so it is scaled down in the y dimension.
+
+<br clear=all>
+== The Chess Set: a Midterm Model ==
+[[Media:Chess.py|Chess.py]] 
+[[Image:Examples-boardSetup.png|thumb|right|The board setup.]]This model was used for the first midterm.  A simple chess set on an undulating board.  Running the model generates several images.
+<br clear=all>
+== Programmed Utilities ==
+
+=== rand(low,high) ===
+It is useful to be able to generate a random number within a range.  This function returns a random real number between the values '''low''' and '''high''':
+
+ def rand(low,high):
+   range = high-low
+   return low + range*random()
+
+=== plasterMat(hue) ===
+The '''plasterMat''' function creates an unnamed plaster-type material colored with the color found at angle '''hue''' on the color wheel.  The use of the '''new''' function to create a new Material.
+
+ def plasterMat(hue):
+   mat = Material()
+   mat.type('plaster')
+   mat.color(hsv2rgb((hue,1,1)))
+   return mat
+
+The following use of '''plasterMat''' is typical:
+ scene.add(cube,plasterMat(30))
+
+<br clear=all>
+
+== Counting Down ==
+The following method counts down from '''n''' and then writes (the underutilized word) '''blastoff''':
+ def countDown(n):
+   if n == 0:
+     print('Blastoff!')
+   else:
+     print(n)
+     countDown(n-1)
+<br clear=all>
+== The Snowstorm Maker&mdash;a Random Placement Function ==
+[[Image:Examples-snowstorm.png|thumb|right|A 300 flake snowstorm]]The following function constructs a spherical snowstorm, suitable for use in a snow globe.
+The '''flake''' parameter must be a polygon that describes the shape of a snowflake.
+ def snowstorm(n,flake):
+   if n == 0:
+     return Mesh()
+   else:
+     flurry = snowstorm(n-1,flake)
+     t = xRot(rand(0,360))*yRot(rand(0,360))*zRot(rand(0,360))
+     t = t*translate(rand(0,100),0,0)*zRot(rand(0,360))*yRot(rand(0,360))
+     flurry.addPoly(t.mapPoly(flake))
+     return flurry
+The randomized placement of the snowflake is an improvement of that described in lab: it orients the flake randomly before moving it into position.  The result of calling '''snowstorm''' is a Mesh.  This can be used in a define, or added to a scene directly:
+ snowflake=raisePoly(polygon(6,5))
+ blizzard=snowstorm(300,snowflake)
+ scene.add(blizzard,whitePlastic)
+
+<br clear=all>
+
+== The Colonnade Builder&mdash;A Computed Placement Function ==
+[[Image:Examples-colonnade.png|thumb|right|A 100 column colonnade.]]The following placement function ''computes'' the placement of components (here, columns in row) based on an index, the value of '''n'''.
+ def colonnade(n):
+   if n == 0:
+     return Group()
+   else:
+     columns = colonnade(n-1)
+     column = Cylinder()
+     column.scale(0.05,1,0.05).material(whitePlaster)
+     columns.add(column,translate(n*20,0,0))
+     return columns
+Things to note:
+* The columns are 5 units wide, 20 units apart.  The first column is 10 units right of the origin
+* All columns are the same, and are white plaster.  The '''column''' of this procedure could have been constructed once, and passed in (see the candy necklace example, below).
+* The columns could be randomly colored by calling '''plasterMat''' with a random hue.
+* The columns could be placed in a circle by translating away from the origin a fixed amount, and then rotating.  If the translation is a computed amount that varies, the result is a spiral.
+
+The columns may be constructed and used on the fly:
+ scene.add(colonnade(10),yRot(-45))
+ camera.pos(xRot(20)).shoot()
+
+<br clear=all>
+
+== Making Three Candy Shapes ==
+=== star(n,minor,major) ===
+[[Image:Examples-star.png|thumb|right|An extruded star.]]This polygon-generating method creates polygons with 2n vertices placed at distances that alternate between '''minor''' and '''major'''.  It is the first function we have seen that makes use of a secondary, 'helper' function, '''(starMaker n max radiusA radiusB)'''.
+ def starMaker(n,max,radiusA,radiusB):
+   if n == 0:
+     return []
+   else:
+     pt = [(radiusA*cos(2*pi*(n/max)),radiusA*sin(2*pi*(n/max)))]
+     return pt + starMaker(n-1,max,radiusB,radiusA)
+
+ def star(n,radiusA,radiusB):
+   return starMaker(2*n,2*n,radiusA,radiusB)
+To make pink star-shaped candy, use the following:
+pinkPlaster=Material().type('plaster').color(hsv2rgb((0,0.25,1)))
+ def starCandy():
+   return extrude(raisePoly(star(5,61,100)),translate(0,0,30))
+ scene.add(starCandy(),pinkPlaster)
+=== crescent(n,minor,major) ===
+[[Image:Examples-crescent.png|right|thumb|A simple moon.]]The following code takes a polygon (ideally one approximating a circle) and flips a small section to form a crescent shape.  The following method (which makes use of two things we'll learn about later - '''map''' and '''lambda''' functions) takes a polygon, shifts it slightly to the right and then takes the absolute value of all the x-values.  The result is a crescent shape whose thickness is (outer-inner):
+ def crescent(n,inner,outer):
+   radius = (inner+outer)/2
+   circle = polygon(n,radius)
+   return [(abs(x+outer-radius),y) for (x,y) in circle]
+The result is a 2D polygon, so construction of crescent shaped candy is similar:
+ def crescentCandy():
+   return extrude(raisePoly(crescent(50,61,100)),translate(0,0,30))
+=== Bezier-based Prism ===
+[[Image:Examples-teapot.png|right|thumb|A teapot Prism]]If you wish to construct Prisms (or Lathes) with smooth (non-polygonal) outlines, you specify a list of Bezier control points (4 at a time) that, in piecewise fashion, extend around the outline of the object.  You then send the message '''(bezier)''' to the Prism.  The following constructs the outline of a teapot (sketched from the side view of the Utah teapot):
+ teapotOutline=raisePoly([(-15,2),(-10,0),(10,0),(15,2),
+			  (15,2),(15,2),(15,2.5),(15,2.5),
+			  (15,2.5),(19,5),(19,5),(20,8),
+			  (20,8),(30,11),(27,22),(35,26),
+			  (35,26),(35,26),(30,26),(30,26),
+			  (30,26),(25,26),(27,17),(20,16),
+			  (20,16),(16,26),(16,26),(15,27),
+			  (15,27),(1,28),(1,28),(4,32),
+			  (4,32),(4,34),(-4,34),(-4,32),
+			  (-4,32),(-1,28),(-1,28),(-15,27),
+			  (-15,27),(-15.5,27),(-15.5,27),(-16.5,24),
+			  (-16.5,24),(-33,23.5),(-33,16),(-26,11),
+			  (-26,11),(-25,10),(-24,12),(-25,13),
+			  (-25,13),(-29,18),(-28,22),(-17.5,22),
+			  (-17.5,22),(-22,13),(-22,8),(-15,2.5),
+			  (-15,2.5),(-15,2.5),(-15,2),(-15,2)])
+The Prism, then, is constructed as follows:
+ teapot=Prism()
+ teapot.profile(teapotOutline).bezier()
+ teapot.scale(1,1,.1) # correct relative dimensions
+
+== The Umbilic Torus-(triTorus n max)==
+[[Image:Examples-umbilicNecklace.png|thumb|right|(triTorus 60 60); after Ferguson's ''Umbilic Torus''.]]The following Model, developed during a Friday lab, uses a computed placement function to place triangular prisms around a necklace.
+ triOutline=raisePoly(polygon(3,20))
+ tri=extrude(triOutline,translate(0,0,10))
+ def triTorus(n,max):
+   if n == 0:
+     circle = Group()
+   else:
+     circle = triTorus(n-1,max)
+     circle.add(tri,plasterMat(360*(n/max)),
+		zRot(120*(n/max))*translate(100,0,0)*yRot(-360*(n/max)))
+   return circle
+
+ scene.add(triTorus(60,60),cyanPlaster)
+ camera.pos(xRot(30)).shoot()
+The value of '''n''' is the number of pieces found in the necklace.  The value '''max''' indicates how many pieces the necklace could hold, if it were full.  To build a necklace with '''n''' triangles, we construct a necklace with '''n-1''' triangles, and add one more.  Each triangle has a hue that corresponds with its angle around the necklace.  In addition, each triangle rotates a percentage of 120-degrees so that if the necklace is closed, one edge of the torus matches with the next after a full rotation.
+
+(A different approach, based on lofting (see below); was used to generate [[:Image:Examples-umbilicTorus.png|this image]].)
+
+== The Candy Charms Necklace Builder ==
+[[Image:Examples-charmsNecklace.png|thumb|right|A necklace of three charms: star, moon, and teapot.]]
+The charmsNecklace placement function includes a combination of randomization and absolute positioning.  At each step of the recursion, the method picks one of three different shapes (see above - a star, a moon, or a teapot) based on a randomly selected value.  The piece is then added to the necklace after random rotation and coloring.
+ def charmsNecklace(n,max):
+   if n == 0:
+      return Group()
+   else:
+      necklace = charmsNecklace(n-1,max)
+      randomValue = rand(0,3)
+      piece = star5 if randomValue < 1 else (moon if randomValue < 2 else teapot)
+      locatePiece = zRot(rand(0,360))*translate(200,0,0)*yRot(360*(n/max))
+      necklace.add(piece,plasterMat(rand(0,360)),locatePiece)
+      return necklace
+You can see the necklace with a command similar to
+ scene.add(charmsNecklace(40,40))
+ camera.pos(xRot(30)).shoot() # tips camera up
+ 
+<br clear=all>
+
+== Recursion on Lists ==
+(To be supplied.)
+<br clear=all>
+== The multiadd Method ==
+This is a slightly simplified version of the version of multiadd we saw in lecture.  This version does not ''return'' a group, it simply adds objects to it.
+ def multiadd(n,obj,grp,initXform,delXform):
+   if n > 0:
+     grp.add(obj,initXform)
+     multiadd(n-1,obj,grp,initXform*delXform,delXform)
+[[Image:Examples-stairwayII.png|thumb|right|Stairway to heaven, II]]
+Here's a typical use of the function, to build a spiral staircase:
+ step = Cube().scale(.5,.1,.2).material(bluePlaster)
+ stairway = Group()
+ multiadd(20,step,stairway,translate(100,-120,0),translate(0,12,0)*yRot(-15))
+ scene.add(stairway)
+[[Image:Examples-stairwayI.png|thumb|right|Stairway to heaven, I]]
+Here's a straight-laced stairway:
+ multiadd(20,step,stairway,translate(0,-120,0),translate(0,15,15))
+<br clear=all>
+== Lofting Springs ==
+[[Image:Examples-spring.png|thumb|right|A slinky.]]
+In this model we construct a spiral spring.  The essential step is the notion of a ''loft'', essentially a multi-step extrude between a series of cross sections of the model.  To loft material across n cross sections we use
+ loft(xSect1,xSect2,xSect3,...,xSectn)
+where each xSect is a 3D polygon.  If you have a list of cross sections, as in
+ frame=[xSect1,xSect2,xSect3,...,xSectn]
+then we can use this list to provide the arguments to loft:
+ loft(*frame)
+The result of a loft is a Mesh of material that covers the cross sections.  The ends are capped with polygons described by xSect1 and xSectn.
+
+Now we use a recursive function that generates a list of cross sections, much in the same way as multiadd (above).  Here, the function multigon take a polygon and transforms it (initially with initXform and then successively with delXform) into a list of n copies that, ideally, form the frame of the object we wish to construct.
+ def multigon(n,poly,initXform,delXform):
+   if n == 0:
+     return []
+   else:
+     return [initXform.map(poly)] + multigon(n-1,poly,initXform*delXform,delXform)
+
+Notice, here, that we are building a list.  In the base case (zero polygons in the frame); the list is empty.  The ultimate list is constructed using '''cons'''.  This takes a polygon (which becomes the car) and a recursively constructed remainder of the frame (which becomes the cdr).
+
+Constructing the spring now involves building a cross section.  Our cross section is a flat rectangle, with the hope that the spring looks something like a [http://en.wikipedia.org/wiki/Slinky slinky].
+ springXsect=raisePoly([(-10,-1),(10,-1),(10,1),(-10,1)])
+Now, we use multigon to build the frame of a full round of the spring:
+ springFrame=multigon(361,springXsect,translate(100,0,0),translate(0,1,0)*yRot(10))
+ spring=loft(*springFrame)
+[[Image:Examples-waterSlide.png|thumb|right|A waterslide, 'shoot the moon'.]]We now can add multiple spring rounds to the scene:
+ (multiadd 20 spring scene identity (translate 0 36 0))
+Each round of the spring rises 36 units, so each must be translated up by that amount.
+
+One could build the waterslide (right) with a crescent-based cross section instead of a rectangle.
+<br clear=all>
+
+== Placing Objects Along a List ==
+[[Image:Examples-ballpath.png|thumb|right|Path of a ball, using morph.]]
+One way to determine the correct placement of objects is to use a list of locations.  Here, we use a list of points to drive the placement of an object (obj) in a Group (grp):
+ def placeList(obj,grp,pts):
+   for (x,y,z) in pts:
+     grp.add(obj,translate(x,y,z))
+
+To generate the list of points, we can use '''morph'''.
+The (morph n a b c d) function computes the point located at each of (n+1) places along
+the curve described by the bezier control points a, b, etc.  (Like bezier, morph accepts
+1, 2, 3, or 4 control points.)  The following, then describes the path of a ball thrown
+from (-100 0 0) to (100 0 0).  The middle control point is right of center, causing the
+path to be asymmetric:
+ ball=Sphere().material(whitePlaster).scale(.1,.1,.1)
+ # generate 31 points from (-100 0 0) to (100 0 0) along arcing path
+ points=morph(30,(-100,0,0),(50,100,0),(100,0,0))
+ placeList(ball,scene,points)
+
+<br clear=all>
+== Building a Hot Air Balloon with a PatchMesh ==
+
+'''[[Media:balloon.py|balloon.py]]'''[[Image:Examples-irisBalloon.png|thumb|right|An iris covered hot air balloon]]
+In this model we construct a portion of a hot air balloon, with van Gogh's [[:Image:irises.png|''Irises'']] mapped around the panels.  The model is motivated by final project work by [[Benjamin Grass|Ben Grass]] from Spring 2007.  (Ben's father worked for RE/MAX...)
+
+The main purpose for hot air balloons is as a billboard for images.  We'll use the irises by constructing a dedicated material:
+ (object irisMat Material
+   (surfaceImage "irises.png")
+ )
+
+The first thing to note is that each panel of the balloon with n panels (here, n is 12); has an edge that lies within a plane, y-rotated by some multiple of 360/n degrees.  We begin by describing the Bezier curve that determines one of these edges (here, the right edge of the panel):
+ right=raisePoly([(30,-120),(150,30),(165,144),(0,150)])
+Using 2D points and promoting the curve to 3-space ensures this curve lies within in a plane.  This is important if we want pairs of panels to sew together correctly.  Next, we define three other curves - the first two are 'control curves' - they determine the tangents of the fabric surface.  This is accomplished by an initial scale by a value more than 1.  Changing this scale causes the balloon to billow more (for larger values) or less (for smaller):
+ almostRight=(scale(1.3,1,1)*yRot(120/n)).mapPoly(right)
+ almostLeft=(scale(1.3,1,1)*yRot(240/n)).mapPoly(right)
+ left=yRot(360/n).mapPoly(right)
+The entire patch, then, is the complete set of 16 points:
+ panelPatch=left+almostLeft+almostRight+right
+To build the first three panels (a quarter of a balloon with 12 panels) we do the following:
+ balloon=PatchMesh()
+ balloon.addPatch(panelPatch)
+ balloon.addPatch(yRot(360/n).mapPoly(panelPatch))
+ balloon.addPatch(yRot(360*2/n).mapPoly(panelPatch))
+ balloon.refinement(5)
+Because each panel spans one nth of a full rotation, they meet perfectly along the edges.  The image shown uses a refinement level of 5 to make smooth panels, but requires considerably more rendering time.
+
+The default mapping of the irises will paint the irises turned sideways (because that's how we constructed the patch).  To re-orient the image correctly, we use the uvmap
+ balloon=PatchMesh()
+ balloon.addUVPatch(panelPatch,[[0,0],[0,1],[1,1],[1,0]])
+ ...
+To wrap the image fully around the balloon, we must carefully select UV coordinates that span 1 nth of the U range, and all of the V range, for each panel.  This, in combination with the panel placement, is probably best specified as part of a recursive function.
+
+You can see [[Benjamin Grass|Ben]]'s final image [[:Image:Finalimage.png|here]].
+
+== A Smoothly Swept Rose Bowl ==
+[[Image:Examples-roseBowl.png|thumb|right|Views of a rose bowl.]][[Kyle Frederick|Kyle]] suggested we experiment with using '''morph''' with sweep.  The effect is wonderful.  Here's a thick-walled blue rose bowl constructed from 7 segments - 3 up from the inside, one across the lip, and 3 down the outside.
+ outline=[(0,10)]
+ outline.extend(morph(20,(25,10),(55,10),(90,20),(90,50)))
+ # the points at end of previous and start of next form lip at top
+ outline.extend(morph(20,(50,100),(50,80),(100,70),(100,50))[1:])
+ outline.extend(morph(20,(100,50),(100,20),(55,0),(25,0))[1:])
+ outline.extend([(0,0)])
+ roseBowlOL=raisePoly(outline)
+Roses (and members of the rose family, including the apple) are one of the few plants with five-fold symmetry: if you bisect an apple along the horizontal the seed mass forms a star.
+ roseBowl=sweep(roseBowlOL,5)
+
+<br clear=all>
+== Growing Lollipops ==
+[[Image:Examples-lollipop.png|thumb|right|Lollipops]]
+For many years I've grown lollipops.  It used to be that you could get LifeSaver holes, the obvious seeds for lollipops.  Today I'd use Tic Tacs.  Plant them in the garden before dinner, and after dinner: Tootsie Pops!
+
+Actually all forms of lollipops, if allowed to grow, grow recursively.  Each day's growth can be seen as the expansion of a new bud off of a main lollipop.  [[Media:Lollipop.py|Here's the code.]]
+<br clear=all>
+== Fog ==
+[[Image:Examples-fog.png|thumb|right|Mort meets fog.]]
+When you wish to add fog to an image, you must set at least two parameters: fog and
+quality.
+ image.fog().quality(10)
+Failing to set quality to 10 will render fogless images (normally, we render at 8).
+
+If you want to change the density of fog, you change the fogAttenuation:
+ image.fogAttenuation(500)
+Normally, the attenuation is 100 - the distance where objects get washed out by half.  Increasing the attenation to 500 makes the fog "less dense".  The fogColor message will change the fog to other colors.
+
+Note that the color of the fog determines the color of the background - it's infinitely far away, so you're looking through infinite amounts of fog.
+<br clear=all>

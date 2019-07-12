@@ -1,0 +1,59 @@
+#!/bin/bash
+# Force the specific search for povray and convert.
+source ambrosia-setup
+
+#
+# Parse command line options.
+# Usage: 
+#   --batch	batch mode; no viewing of images, just generation
+#   --pov	specify name of pov file
+PROJECTNAME="/tmp/$USER"
+WORKDIR=/tmp/${USER}-ambrosia
+EXPECTEDFRAMECOUNT=1000000
+OS=`uname -s`
+while [ $# -gt 0 ]; do
+  case $1 in
+	--debug) DEBUG=yup;;
+	--project) shift; PROJECTNAME="$1";;
+	--workdir) shift; WORKDIR="$1";;
+	--framecount) shift; EXPECTEDFRAMECOUNT="$1";;
+	--help) echo "Usage: ambrosia-buildMovie [--debug] [--project project-path] [--workdir dir] [--framecount n]"; exit 1;;
+	else) echo "Usage: ambrosia-buildMovie [--debug] [--project project-path] [--workdir dir] [--framecount n]"; exit 1;;
+  esac
+  shift
+done
+PROJECTDIR=`dirname "$PROJECTNAME"`
+TITLE=`basename "$PROJECTNAME"`
+cd "$PROJECTDIR"
+rm -rf "${WORKDIR}"
+mkdir "${WORKDIR}"
+LOG="${TITLE}-$$.log"
+MOVIE="${TITLE}-$$.mp4"
+echo "Determining latest frames:" >"${LOG}"
+FRAME=0
+DONE=""
+while [ "$FRAME" -lt "$EXPECTEDFRAMECOUNT" -a -z "${DONE}" ]; do
+FRAMENUM=`printf '%05d' ${FRAME}`
+FN=`ls -1t "${TITLE}+${FRAMENUM}"-*.png 2>/dev/null | head -1`
+if [ -e "${FN}" ]; then
+  #frame actually exists
+  SFN="${WORKDIR}/${TITLE}+${FRAME}.png"
+  ln -sf "${PROJECTDIR}/${FN}" "${SFN}"
+  echo "${FN}: ${SFN}" >>"${LOG}"
+  let FRAME=${FRAME}+1
+else
+  DONE=1
+fi
+done
+FRAMECOUNT=$FRAME
+echo "Output from ffmpeg:" >>"$LOG"
+#${MAKEMOVIE} -sameq -i "${WORKDIR}/${TITLE}+%d.png" "${MOVIE}" >>"${LOG}" 2>&1
+${MAKEMOVIE} -i "${WORKDIR}/${TITLE}+%d.png" -c:v libx264 -pix_fmt yuv420p "${MOVIE}" >>"${LOG}" 2>&1
+rm -rf "${WORKDIR}"
+if [ -e "${MOVIE}" ]; then
+   echo "Movie generated from ${FRAMECOUNT} frames."
+   ${MOVIEVIEW} "${MOVIE}" </dev/null >/dev/null 2>/dev/null &
+else
+   ${TEXTVIEW} "${LOG}"
+fi
+

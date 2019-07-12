@@ -1,0 +1,397 @@
+#!/bin/bash
+# Script to run POV on behalf of ambrosia.
+# Only switch controls whether mead renders stereo images.
+# set up paths
+source ambrosia-setup
+
+#
+# Where povray and convert are found.  This differs on different machines.
+POVRAY="$POVRAY_LOC -D "
+CONVERT="$CONVERT_LOC"
+COMPOSITE="$COMPOSITE_LOC"
+MOGRIFY="$MOGRIFY_LOC"
+if [ -e ~/.dirtyambrosia ]; then KEEP=yup; fi
+if [ -e ~/.debugambrosia ]; then DEBUG=yup; fi
+
+#
+# Parse command line options.
+# Usage: 
+#   --batch	batch mode; no viewing of images, just generation
+#   --pov	specify name of pov file
+while [ $# -gt 0 ]; do
+  case $1 in
+	--debug) DEBUG=yup;;
+        --keep) KEEP=yup;;
+	--batch) BATCH=yup;;
+	--pov) shift; INFILE=$1;;
+	--ini) shift; INIFILE=$1;;
+	--output) shift; OUTFILE=$1;;
+	--frame) shift; FRAMENUMBER=`printf '+%05d' $1`;;
+	--stereo) STEREO=yup;;
+        --pip) PIP=yup;;
+        --gravity) PIP=yup; shift; GRAVITY=$1;;
+	--isometric) ISOMETRIC=yup;;
+	--front) ISOMETRIC=yup; shift; INFILEF=$1;;
+        --large) PIP=yup; shift; INFILELG=$1;;
+        --small) shift; INFILESM=$1;;
+	--left) STEREO=yup; shift; INFILEL=$1;;
+	--right) shift; INFILER=$1;;
+	--top) ISOMETRIC=yup; shift; INFILET=$1;;
+	--ortho) ISOMETRIC=yup; shift; IOFINEO=$1;;
+	else) echo "Usage: ambrosia-pov [--debug] [--keep] [--batch] [--pov pov-file] [--ini ini-file] [--output output-file] [--frame number] [[--pip] [--large large-pov-file] [--small small-pov-file]] [[--stereo] [--left left-pov-file] [--right right-pov-file]] [[--isometric] [--front front-pov-file] [--right right-pov-file] [--top top-pov-file] [--ortho ortho-pov-file]]"; exit 1;;
+  esac
+  shift
+done
+ if [ -n "$INFILESM" -a -z "$PIP" ]; then
+   echo "Switch --small specified, but not --pip.  Exiting."
+   exit 1;
+ fi
+if [ -n "$INFILER" -a -z "$ISOMETRIC" -a -z "$STEREO" ]; then
+  echo "Switch --right specified, but neither --stereo or --isometric. Exiting."
+  exit 1;
+fi
+
+# 
+# Output file type.  Set this to desired type (tiff, etc.) if conversion from
+# png is necessary.  Otherwise leave as png, which generates no conversion.
+# IMGTYPE=tiff
+IMGTYPE="png"
+
+#
+# Directory that will take the pov file.
+# On machines where home directories are shared, this should be /tmp, which
+# (1) is always on a local disk, (2) is automatically cleared out on reboot.
+TMP="${TMP-/tmp}"
+
+#
+# The base portion of default file names.
+BASENAME="${TMP}/${USER}"
+
+#
+# The POV parameter file.  This file contains switches set in the Image
+# object associated with the camera.  Like ambrosia.pov, this should be
+# parameterized to contain a process id, or other serializer.
+# This file will be deleted.
+INIFILE="${INIFILE-${BASENAME}.ini}"
+if [ -n "${PIP}" ]; then
+  INIFILELG="${INIFILELG-${BASENAME}-large.ini}"
+  INIFILESM="${INIFILESM-${BASENAME}-small.ini}"
+fi
+
+#
+# The source file, typically ambrosia.pov (suffix is assumed by povray).
+# Again, saved in $TMP.  An improvement would be use a process-id so that
+# multiple users can generate POV files at the same time.
+# This file will be deleted.
+OUTFILE="${OUTFILE-${BASENAME}}${FRAMENUMBER}-$$.${IMGTYPE}"
+BASEDIR=`dirname "${OUTFILE}"`
+if [ \! -e "$BASEDIR" ]; then
+  cat <<EOF
+
+WARNING: The target directory ("$BASEDIR") for your output files does not exist.
+Make sure you have a correctly spelled folder name (including spaces, etc).
+
+EOF
+exit 1;
+fi
+if [ -n "$PIP" ]; then
+  INFILELG="${INFILELG-${BASENAME}-large.pov}"
+  INFILESM="${INFILESM-${BASENAME}-small.pov}"
+  GRAVITY="${GRAVITY-SouthEast}"
+  POVOUTFILELG="${BASENAME}-large-$$.png"
+  POVOUTFILESM="${BASENAME}-small-$$.png"
+elif [ -n "$STEREO" ]; then
+  INFILEL="${INFILEL-${BASENAME}-left.pov}"
+  INFILER="${INFILER-${BASENAME}-right.pov}"
+  POVOUTFILEL="${BASENAME}-left-$$.png"
+  POVOUTFILER="${BASENAME}-right-$$.png"
+elif [ -n "$ISOMETRIC" ]; then
+  INFILEF="${INFILEF-${BASENAME}-front.pov}"
+  INFILER="${INFILER-${BASENAME}-right.pov}"
+  INFILET="${INFILET-${BASENAME}-top.pov}"
+  INFILEO="${INFILEO-${BASENAME}-ortho.pov}"
+  POVOUTFILEF="${BASENAME}-front-$$.png"
+  POVOUTFILER="${BASENAME}-right-$$.png"
+  POVOUTFILET="${BASENAME}-top-$$.png"
+  POVOUTFILEO="${BASENAME}-ortho-$$.png"
+  POVOUTFILEC1="${BASENAME}-column1-$$.png"
+  POVOUTFILEC2="${BASENAME}-column2-$$.png"
+else
+  INFILE="${INFILE-${BASENAME}.pov}"
+  POVOUTFILE="${BASENAME}-$$.png"
+fi
+
+
+#
+# Name of the log file the contains errors from POV.
+# If this file is generated, there are errors to be reported to the user.
+#LOGFILE="${BASENAME}-$$.log"
+LOGFILE="${USER}-$$.log"
+# This is the name of the user-presented log file.
+TEMPF="${BASENAME}-$$.err"
+
+if [ -n "$DEBUG" ]; then
+  echo "Debug mode."
+  if [ -e ~/.debugambrosia ]; then echo "~/.debugambrosia exists"; fi
+  if [ -n "$BATCH" ]; then echo "Batch mode."; fi
+  echo "Temporary directory: \"${TMP}\""
+  echo "INI file: $INIFILE"
+  if [ -n "$PIP" ]; then
+  echo "Picture-in-piecture mode."
+  echo "INI-large file: $INIFILELG"
+  echo "INI-small file: $INIFILESM"
+  echo "Gravity: $GRAVITY"
+  echo "Large input file: \"$INFILELG\""
+  echo "Small input file: \"$INFILESM\""
+  echo "POV large output file: \"$POVOUTFILELG\""
+  echo "POV small output file: \"$POVOUTFILESM\""
+  elif [ -n "$STEREO" ]; then
+  echo "Stereo mode."
+  echo "Left input file: \"$INFILEL\""
+  echo "Right input file: \"$INFILER\""
+  echo "POV left output file: \"$POVOUTFILEL\""
+  echo "POV right output file: \"$POVOUTFILER\""
+  elif [ -n "$ISOMETRIC" ]; then
+    cat <<EOF
+Isometric mode.
+Front input file: "$INFILEF"
+Right input file: "$INFILER"
+Top input file: "$INFILET"
+Orthographic input file: "$INFILEO"
+POV front output file: "$POVOUTFILEF"
+POV right output file: "$POVOUTFILER"
+POV top output file: "$POVOUTFILET"
+POV orthometric output file: "$POVOUTFILEO"
+POV column 1 intermediate file: "$POVOUTFILEC1"
+POV column 2 intermediate file: "$POVOUTFILEC2"
+EOF
+  else
+    echo "Input file: \"$INFILE\""
+    echo "POV Output file: \"$POVOUTFILE\""
+  fi
+  echo "Output file: $OUTFILE"
+  echo "KEEP=>${KEEP}<"
+  if [ -n "$KEEP" ]; then 
+    if [ -e ~/.dirtyambrosia ]; then echo "~/.dirtyambrosia exists."; fi
+    echo "$TMP/ will be left as is."
+  fi
+fi
+
+echo -n "["`basename "$OUTFILE"`": "
+if [ -n "$STEREO" ]; then
+# The command line.
+# This command generates png files (+FN) and all errors (+GA) to logfile.
+# It bootstraps settings from $INIFILE.
+echo -n `date +"%H:%M:%S"`" left"
+(cd ${TMP}/; $POVRAY 2>/dev/null +I"${INFILEL}" +FN +O"${POVOUTFILEL}" +GA"${LOGFILE}" "${INIFILE}")
+if [ -e "${POVOUTFILEL}" ]; then
+  echo -n " "`date +"%H:%M:%S"`" right"
+  (cd "${TMP}"/; $POVRAY 2>/dev/null +I"${INFILER}" +FN +O"${POVOUTFILER}" +GA"${LOGFILE}" "${INIFILE}")
+fi 
+echo " "`date +"%H:%M:%S"`"]"
+#
+# We now determine if there were errors.
+# If there were, generate a tailored error file, presented in a text browser.
+if [ \! -e "${POVOUTFILEL}" -o \! -e "${POVOUTFILER}" ] ; then
+   if [ \! -e "${LOGFILE}" ]; then
+     #
+     # There were errors, but no log file, for some reason.  Give help.
+     cat <<EOF >"${TEMPF}"
+For some reason, Ambrosia generated neither an image nor an error file.
+This could be because:
+  1. Because of a problem in Python, or
+  2. Because there is a problem locating povray.
+EOF
+   else 
+     #
+     # We assume there were POV errors reported in the log file.
+     # We construct a tailored log file that helps the user focus on
+     # the particular problem.
+     cat - "${LOGFILE}" <<EOF >"${TEMPF}"
+THERE WERE ERRORS when Ambrosia attempted to render your image using POV.
+Below is the log of this rendering.
+
+You should look for hints on syntax errors near the phrase "Parsing", below.
+-------------------------------------------------------------------------
+EOF
+     echo "No image was generated." >>"${TEMPF}"
+   fi
+   $TEXTVIEW "${TEMPF}" &
+else # we assume the pov rendered correctly
+     #
+     # we need to do a conversion
+     ${MOGRIFY} -type Grayscale "${POVOUTFILEL}"
+     ${MOGRIFY} -type Grayscale "${POVOUTFILER}"
+#     ${COMPOSITE} -stereo "${POVOUTFILEL}" "${POVOUTFILER}" -type Palette -depth 8 "${OUTFILE}"
+     ${COMPOSITE} -stereo "${POVOUTFILEL}" "${POVOUTFILER}" "${OUTFILE}"
+     rm -f "${POVOUTFILEL}" "${POVOUTFILER}"
+     SUCCESS=yup
+fi
+elif [ -n "$PIP" ]; then
+# The command line.
+# This command generates png files (+FN) and all errors (+GA) to logfile.
+# It bootstraps settings from $INIFILELG and $INIFILESM.
+echo -n `date +"%H:%M:%S"`" large"
+(cd ${TMP}/; $POVRAY 2>/dev/null +I"${INFILELG}" +FN +O"${POVOUTFILELG}" +GA"${LOGFILE}" "${INIFILELG}")
+if [ -e "${POVOUTFILELG}" ]; then
+  echo -n " "`date +"%H:%M:%S"`" small"
+  (cd "${TMP}"/; $POVRAY 2>/dev/null +I"${INFILESM}" +FN +O"${POVOUTFILESM}" +GA"${LOGFILE}" "${INIFILESM}")
+fi
+echo " "`date +"%H:%M:%S"`"]"
+#
+# We now determine if there were errors.
+# If there were, generate a tailored error file, presented in a text browser.
+if [ \! -e "${POVOUTFILELG}" -o \! -e "${POVOUTFILESM}" ] ; then
+   if [ \! -e "${LOGFILE}" ]; then
+     #
+     # There were errors, but no log file, for some reason.  Give help.
+     cat <<EOF >"${TEMPF}"
+For some reason, Ambrosia generated neither an image nor an error file.
+This could be because:
+  1. Because of a problem in Python, or
+  2. Because there is a problem locating povray.
+EOF
+   else 
+     #
+     # We assume there were POV errors reported in the log file.
+     # We construct a tailored log file that helps the user focus on
+     # the particular problem.
+     cat - "${LOGFILE}" <<EOF >"${TEMPF}"
+THERE WERE ERRORS when Ambrosia attempted to render your image using POV.
+Below is the log of this rendering.
+
+You should look for hints on syntax errors near the phrase "Parsing", below.
+-------------------------------------------------------------------------
+EOF
+     echo "No image was generated." >>"${TEMPF}"
+   fi
+   $TEXTVIEW "${TEMPF}" &
+else # we assume the pov rendered correctly
+     #
+     # we need to do a conversion
+#     ${COMPOSITE} -gravity "${GRAVITY}" "${POVOUTFILESM}" "${POVOUTFILELG}" -type Palette -depth 8 "${OUTFILE}"
+     ${COMPOSITE} -gravity "${GRAVITY}" "${POVOUTFILESM}" "${POVOUTFILELG}" "${OUTFILE}"
+     rm -f "${POVOUTFILELG}" "${POVOUTFILESM}"
+     SUCCESS=yup
+fi
+elif [ -n "$ISOMETRIC" ]; then
+echo -n `date +"%H:%M:%S"`" front"
+(cd "${TMP}"/; $POVRAY 2>/dev/null +I"${INFILEF}" +FN +O"${POVOUTFILEF}" +GA"${LOGFILE}" "${INIFILE}")
+if [ -e "${POVOUTFILEF}" ]; then
+  echo -n " "`date +"%H:%M:%S"`" right"
+  (cd "${TMP}"/; $POVRAY 2>/dev/null +I"${INFILER}" +FN +O"${POVOUTFILER}" +GA"${LOGFILE}" "${INIFILE}")
+ if [ -e "${POVOUTFILER}" ]; then
+  echo -n " "`date +"%H:%M:%S"`" top"
+  (cd "${TMP}"/; $POVRAY 2>/dev/null +I"${INFILET}" +FN +O"${POVOUTFILET}" +GA"${LOGFILE}" "${INIFILE}")
+ if [ -e "${POVOUTFILET}" ]; then
+  echo -n " "`date +"%H:%M:%S"`" 3D"
+  (cd "${TMP}"/; $POVRAY 2>/dev/null +I"${INFILEO}" +FN +O"${POVOUTFILEO}" +GA"${LOGFILE}" "${INIFILE}")
+ fi
+ fi
+fi
+echo " "`date +"%H:%M:%S"`"]"
+#
+# We now determine if there were errors.
+# If there were, generate a tailored error file, presented in a text browser.
+if [ \! -e "${POVOUTFILEF}" -o \! -e "${POVOUTFILER}" -o \! -e "${POVOUTFILET}" -o \! -e "${POVOUTFILEO}" ] ; then
+   if [ \! -e "${LOGFILE}" ]; then
+     #
+     # There were errors, but no log file, for some reason.  Give help.
+     cat <<EOF >"${TEMPF}"
+For some reason, Ambrosia generated neither an image nor an error file.
+This could be because:
+  1. Because of a problem in Python, or
+  2. Because there is a problem locating povray.
+EOF
+   else 
+     #
+     # We assume there were POV errors reported in the log file.
+     # We construct a tailored log file that helps the user focus on
+     # the particular problem.
+     cat - "${LOGFILE}" <<EOF >"${TEMPF}"
+THERE WERE ERRORS when Ambrosia attempted to render your image using POV.
+Below is the log of this rendering.
+
+You should look for hints on syntax errors near the phrase "Parsing", below.
+-------------------------------------------------------------------------
+EOF
+     echo "No image was generated." >>"${TEMPF}"
+   fi
+   $TEXTVIEW "${TEMPF}" &
+else # we assume the pov rendered correctly
+     #
+     # we need to do a conversion
+     ${CONVERT} -append "${POVOUTFILET}" "${POVOUTFILEF}" "${POVOUTFILEC1}"
+     ${CONVERT} -append "${POVOUTFILEO}" "${POVOUTFILER}" "${POVOUTFILEC2}"
+#     ${CONVERT} +append "${POVOUTFILEC1}" "${POVOUTFILEC2}" -type Palette -depth 8 "${OUTFILE}"
+     ${CONVERT} +append "${POVOUTFILEC1}" "${POVOUTFILEC2}" "${OUTFILE}"
+   if [ -z "${KEEP}" ]; then
+    rm -f "${POVOUTFILEF}" "${POVOUTFILET}" "${POVOUTFILER}" "${POVOUTFILEO}" "${POVOUTFILEC1}" "${POVOUTFILEC2}"
+   fi
+     SUCCESS=yup
+fi
+else
+# The command line.
+# This command generates png files (+FN) and all errors (+GA) to logfile.
+# It bootstraps settings from $INIFILE.
+# echo "(cd "${TMP}"/; time $POVRAY 2>/dev/null +I"${INFILE}" +FN +O"${POVOUTFILE}" +GA"${LOGFILE}" "${INIFILE}")"
+echo -n `date +"%H:%M:%S"`"..."
+(cd "${TMP}"/; $POVRAY 2>/dev/null +I"${INFILE}" +FN +O"${POVOUTFILE}" +GA"${LOGFILE}" "${INIFILE}")
+echo `date +"%H:%M:%S"`"]"
+#
+# We now determine if there were errors.
+# If there were, generate a tailored error file, presented in a text browser.
+if [ \! -e "${POVOUTFILE}" ] ; then
+   if [ \! -e "${LOGFILE}" ]; then
+     #
+     # There were errors, but no log file, for some reason.  Give help.
+     cat <<EOF >"${TEMPF}"
+For some reason, Ambrosia generated neither an image nor an error file.
+This could be because:
+  1. Because of a problem in Python, or
+  2. Because there is a problem locating povray.
+EOF
+   else 
+     #
+     # We assume there were POV errors reported in the log file.
+     # We construct a tailored log file that helps the user focus on
+     # the particular problem.
+     cat - "${LOGFILE}" <<EOF >"${TEMPF}"
+THERE WERE ERRORS when Ambrosia attempted to render your image using POV.
+Below is the log of this rendering.
+
+You should look for hints on syntax errors near the phrase "Parsing", below.
+-------------------------------------------------------------------------
+EOF
+     echo "No image was generated." >>"${TEMPF}"
+   fi
+   $TEXTVIEW "${TEMPF}" &
+else # we assume the pov rendered correctly
+   if [ "$IMGTYPE" \!= "png" ]; then
+      #
+      # we need to do a conversion
+      $CONVERT "${POVOUTFILE}" "${OUTFILE}"
+      rm -f "${POVOUTFILE}"
+   else
+      if [ "${POVOUTFILE}" \!= "${OUTFILE}" ]; then
+	cp -f "${POVOUTFILE}" "${OUTFILE}"
+	rm -f "${POVOUTFILE}"
+      fi
+   fi
+   SUCCESS=yup
+fi
+fi
+if [ -n "$SUCCESS" -a -z "$BATCH" ]; then
+   ${VIEW} "${OUTFILE}" </dev/null >/dev/null 2>/dev/null &
+fi
+if [ -z "${KEEP}" ]; then
+   rm -f "${INFILE}" "${INFILEL}" "${INFFILER}" "${INFILELG}" "${INFFILESM}" "${INIFILE}" "${INIFILELG}" "${INIFILESM}"
+   if [ -n "$SUCCESS" ]; then
+      rm -f "${TEMPF}" "${LOGFILE}"
+   fi
+fi
+# remove images older than six hours
+# use (keep #t) if you want to keep old images
+if [ -z "${KEEP}" ]; then
+   find "${TMP}"/ -cmin +600 \( -name '*.png' -o -name '*.log' -o -name '*.err' \) -exec rm -f '{}' \; 2>/dev/null
+fi

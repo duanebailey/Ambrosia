@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+# -*- python-mode -*-
+# Display a general file.  Similar functioning to "open" on a Mac.
+"""Display a file on the screen.  This works for a wide variety of image types
+(all handled by ImageMagick), text files, pdf files, postscript files, etc."""
+
+if __name__ == "__main__":
+   from sys import argv,stderr
+   import os
+   if len(argv) == 1:
+      print("Usage: ambrosia-open <filename>",file=stderr)
+      exit(1)
+   pathname = argv[1]
+   if not os.path.exists(pathname):
+      print("File {} does not exist.".format(pathname),file=stderr)
+      exit(1)
+   filename = os.path.basename(pathname)
+   filebase,ext = os.path.splitext(filename)
+   if ext:
+      ext = ext[1:].lower()
+
+   if ext in ['png','gif','jpg','jpeg','tif','tiff','ppm']:
+      result = os.system('display {}'.format(pathname))
+      if result:
+         print("display returned errorful status code {}".format(result),file=stderr)
+         exit(result)
+   elif ext in ['txt', 'log']:
+      result = os.system('xterm -e less {}'.format(pathname))
+      if result:
+         print("xterm returned error status code {}".format(result),file=stderr)
+         exit(result)
+   else:
+      # ask posix 'file' command to determine the correct type.
+      if any([line for line in os.popen('file {}'.format(pathname)) if 'ASCII' in line]):
+         result = os.system('xterm -e less {}'.format(pathname))
+         if result:
+            print("xterm returned error status code {}".format(result),file=stderr)
+            exit(result)
+      else:
+         print("Don't know how to display file {}.".format(pathname,ext))
+   
+      
+   

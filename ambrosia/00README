@@ -1,0 +1,50 @@
+This directory contains the definitions for the ambrosia system.
+(c) 2013-19 duane a. bailey
+
+BILL OF MATERIALS
+00README	 this file
+02TODO		 things yet to be done (a monotonically increasing list...)
+03DOCUMENTATION  goals for documentation
+04WILLIAMSINSTALL a description of how to install this in the Williams env't
+MacInstall.{txt,pdf} instructions on how to install ambrosia on a Mac
+
+ambrosia:
+ Python files (in ideal load order):
+ license.py      use license
+ decorators.py   documentation checking annotations
+ basics.py	 primitives (math, transforms, etc)
+ objects.py	 base object definitions (base classes, transforms to materials)
+ cameras.py      images and various camera types
+ lights.py       lights (including spots and arrays)
+ parts.py        cubes, planes, spheres, SOR's, etc.
+ meshes.py       lists with fuzzy compare, meshes, patchmeshes and heightfields
+ surfaces.py     mathematical surfaces (quadrics, etc.)
+ polyhedra.py	 regular polyhedra
+
+Subdirectories:
+ zoo             directory of common shared models
+   teapot.py     Newell teapot (PatchMesh)
+   bunny.py      Stanford bunny (Mesh)
+   buddha.py     Happy Buddha figurine (Mesh)
+   cow.py        cow (Mesh)
+   hand.py       hand skeleton (Mesh)
+   dragon.py     chinese dragon (Mesh)
+   horse.py      horse (Mesh)
+
+ examples        directory of larger example models (varied and undocumented)
+
+
+ABSTRACT
+
+Ambrosia is a simple, Python-oriented modeling front-end for the Persistence
+of Vision (POV) open source ray tracer.  Its purpose is to introduce students
+to the science of modeling (for example the linear algebra of transformations)
+as well as the creativity of programming.  It follows, closely, the design
+of Mead (a scheme-based system developed by Duane Bailey) and Jabka (a
+scheme-based frontend to an inhouse graphics system by Donald House).
+
+Mead ("More fun than Java") and Jabka were used for nearly two decades
+to teach students in a "primarily for non-majors" course at Williams, CS109.
+
+Ambrosia ("More fun than Mead!") is intended to be a potential platform
+for courses that may serve as a an alternative to CS1.
