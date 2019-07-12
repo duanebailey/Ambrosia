@@ -1,8 +1,7 @@
 #!/bin/bash
 # This script to set the environment variables needed
 AMBROSIAHOME=$HOME/ambrosia
-# Remove any indications of debugging from previous runs.
-rm -f $HOME/.dirtyambrosia $HOME/.debugambrosia
+exec "$@"
 
 
 
