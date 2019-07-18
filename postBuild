@@ -1,2 +1,2 @@
 #!
-jupyter trust *.ipnyb
+jupyter trust *.ipynb
