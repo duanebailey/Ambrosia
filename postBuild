@@ -1,2 +1,4 @@
 #!
-jupyter trust *.ipynb
+echo 'Trusting all the notebooks.'
+find . -name '*.ipynb' -exec jupyter trust '{}' \;
+
