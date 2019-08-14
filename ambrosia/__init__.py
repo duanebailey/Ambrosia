@@ -3,7 +3,7 @@
 """Ambrosia, a graphics modeling system.
 
 website: http://www.cs.williams.edu/~bailey/Ambrosia
-(c) 2013 duane a. bailey
+(c) 2013-2019 duane a. bailey
 
 Ambrosia is a collection of Python classes that allow a camera-oriented
 abstraction as an interface to rendering engines.  Currently, only the

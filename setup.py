@@ -1,11 +1,12 @@
-# A file for Duane A. Bailey's ambrosia package.
+# Installation instructions for Duane Bailey's Ambrosia Modeling System.
+# (c) 2019 duane a. bailey
 from setuptools import setup
 from codecs import open
 from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-# Get the long description from the relevant file
+# The long description of Ambrosia
 long_description = """
 AMBROSIA
 ========
@@ -18,9 +19,7 @@ See http://www.cs.williams.edu/~bailey/Ambrosia."""
 
 setup(
     name='ambrosia',
-
     version='1.0',
-
     description='Package for CS109, Williams College, taught by Duane A. Bailey',
     long_description=long_description,
 
@@ -36,26 +35,15 @@ setup(
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        # How mature is this project? Common values are
-        #   3 - Alpha
-        #   4 - Beta
-        #   5 - Production/Stable
         'Development Status :: 5 - Production/Stable',
-
-        # Indicate who your project is intended for
         'Intended Audience :: Students',
         'Topic :: Computer Graphics :: 3D Modeling',
-
-        # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: BSD 3-Clause License',
-
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
     ],
-
-    # What does your project relate to?
     keywords='computer graphics modeling',
 
     # You can just specify the packages manually here if your project is

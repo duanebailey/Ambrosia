@@ -62,7 +62,7 @@ from collections import Iterable
 from random import random
 from random import seed as randseed
 
-__all__ = ( 'ambrosiaCopyright', 'ambrosiaHome', 'ambrosiaVersion', 'area', 'black', 'blend', 'blue', 'clamp', 'clampedType', 'closePoly', 'concave', 'concaves', 'convex', 'crossProduct', 'cyan', 'deg2rad', 'distance', 'dkGray', 'docmd', 'docmdWoutput', 'dotProduct', 'e', 'edges', 'executableDir', 'fileExists', 'frac', 'fuzz', 'golden', 'gray', 'green', 'halfpi', 'hsv2rgb', 'innerEdges', 'last', 'lowerPoly', 'ltGray', 'magenta', 'morph', 'near', 'normalize', 'openPoly', 'origin', 'perimeter', 'phi', 'pi', 'pi2', 'poly2tri', 'polygon', 'purple', 'raisePoly', 'rad2deg', 'rand', 'red', 'rgb2hsv', 'seed', 'semigon', 'splitBezier', 'sqr', 'sqrDiff', 'triContains', 'triContainsAny', 'triList', 'triangulate', 'triangulateUV', 'triples', 'typeCheck', 'vectorClamp', 'vectorDifference', 'vectorLength', 'vectorScale', 'vectorSum', 'white', 'yellow')
+__all__ = ( 'ambrosiaCopyright', 'ambrosiaHome', 'ambrosiaVersion', 'area', 'black', 'blend', 'blue', 'clamp', 'clampedType', 'closePoly', 'concave', 'concaves', 'convex', 'crossProduct', 'cyan', 'deg2rad', 'distance', 'dkGray', 'docmd', 'docmdWoutput', 'dotProduct', 'e', 'edges', 'fileExists', 'frac', 'fuzz', 'golden', 'gray', 'green', 'halfpi', 'hsv2rgb', 'innerEdges', 'last', 'lowerPoly', 'ltGray', 'magenta', 'morph', 'near', 'normalize', 'openPoly', 'origin', 'perimeter', 'phi', 'pi', 'pi2', 'poly2tri', 'polygon', 'purple', 'raisePoly', 'rad2deg', 'rand', 'red', 'rgb2hsv', 'scriptsDir', 'seed', 'semigon', 'splitBezier', 'sqr', 'sqrDiff', 'triContains', 'triContainsAny', 'triList', 'triangulate', 'triangulateUV', 'triples', 'typeCheck', 'userName', 'userHome', 'vectorClamp', 'vectorDifference', 'vectorLength', 'vectorScale', 'vectorSum', 'white', 'yellow')
 
 ###############################################################################
 # BUILTINS:
@@ -92,13 +92,10 @@ purple = (89/255,17/255,142/255) # Pantone PMS 267 (Williams)
 #purpleA1 = (72/255, 31/255, 145/255) # Pantone PMS 267c (Amherst)
 #purpleA2 = (109/255, 40/255, 170/255) # Pantone PMS 266 (Amherst, vibrant)
 
-try:
-   ambrosiaHome = os.environ['HOME']
-except KeyError:
-   print("Your environment is not set up for cs109 (use source 109).")
-   exit(1)
-
-executableDir = ambrosiaHome+'/scripts/'
+ambrosiaHome = os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
+userHome = os.getenv('HOME')
+userName = os.getenv('USER')
+scriptsDir = os.path.join(ambrosiaHome,'scripts')
 ###############################################################################
 # Definitions
 class clampedType(object):

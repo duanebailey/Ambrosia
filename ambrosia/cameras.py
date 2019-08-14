@@ -2,7 +2,7 @@
 # Project Ambrosia (c) 2013-19 duane a. bailey
 """Basic camera definitions.
 
-(c) 2013 duane a. bailey
+(c) 2013-19 duane a. bailey
 
 This module defines the classes that support camera-like objects.
 
@@ -480,7 +480,7 @@ dot-product of the two vectors.  Typically, we set the up vector to (0,1,0).
         pov.open("/home/jovyan/images/{}.pov".format(os.getenv("USER")))
         self._POV_proof(*args)
         pov.close()
-        script = executableDir + "ambrosia-jupyter-pov"
+        script = os.path.join(scriptsDir,"ambrosia-jupyter-pov")
         if not fileExists(script):
             print("Cannot find ambrosia's POV script; is ambrosia set up correctly?")
             exit(1)
@@ -516,7 +516,7 @@ dot-product of the two vectors.  Typically, we set the up vector to (0,1,0).
         """Combine latest version of images into a movie."""
         i = self.getImage()
         pn = i.getFilePath() or os.getenv("USER") or "untitled"
-        docmd(executableDir + 'ambrosia-buildMovie --project "{}" --framecount {}'.format(pn,i.getFrameNumber()))
+        docmd(os.path.join(scriptsDir,'ambrosia-buildMovie') + ' --project "{}" --framecount {}'.format(pn,i.getFrameNumber()))
     
     def _POV_(self,context):
         ar = self.getImage().getAspectRatio()
@@ -597,7 +597,7 @@ class StereoCamera(Camera):
         self._POV_proof(*args)
         pov.close()
         self.pos(nosePos)
-        docmd(executableDir + "ambrosia-pov --stereo"+fnsw+vsw)
+        docmd(os.path.join(scriptsDir,"ambrosia-pov") + " --stereo"+fnsw+vsw)
 
 ###############################################################################
 # PIPCamera: a picture-in-picture mode; great for animations.
@@ -644,7 +644,7 @@ class PIPCamera(Camera):
         pov.open("/home/jovyan/images/"+os.getenv("USER")+"-small.pov")
         icam._POV_proof(*args)
         pov.close()
-        docmd(executableDir + 'ambrosia-pov --pip --gravity "{}" {}{}'.format(self.getInsetPosition(),fnsw,vsw))
+        docmd(os.path.join(scriptsDir,'ambrosia-pov')+' --pip --gravity "{}" {}{}'.format(self.getInsetPosition(),fnsw,vsw))
 
 ###############################################################################
 # IsometricCamera: shoot from three orthoganal locations & perspective
@@ -694,4 +694,4 @@ class IsometricCamera(Camera):
         self._POV_proof(*args)
         pov.close()
         # left in correct position
-        docmd(executableDir + "ambrosia-pov --isometric "+fnsw+vsw)
+        docmd(os.path.join(scriptsDir,"ambrosia-pov") + " --isometric "+fnsw+vsw)

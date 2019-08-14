@@ -2,7 +2,7 @@
 # Project Ambrosia (c) 2013-19 duane a. bailey
 """Low level ambrosia object hierarchy.
 
-(c) 2013 duane a. bailey
+(c) 2013-2019 duane a. bailey
 
 This module implements many primitive ambrosia classes and is responsible
 for defining most global object definitions.
