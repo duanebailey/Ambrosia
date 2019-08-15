@@ -40,7 +40,7 @@ Global materials:
 import abc
 import math
 import os
-from sys import stdout,setrecursionlimit,getrecursionlimit
+from sys import stdout,setrecursionlimit,getrecursionlimit,modules
 from collections import Hashable
 from itertools import count
 from ambrosia.decorators import *
@@ -48,6 +48,11 @@ from ambrosia.basics import *
 
 __all__ = ['AmbrosiaObject', 'blackPlaster', 'blackPlastic', 'bluePlaster', 'bluePlastic', 'Color', 'Context', 'CSG', 'cyanPlaster', 'cyanPlastic', 'defaultMaterial', 'describe', 'Difference', 'dkGrayPlaster', 'dkGrayPlastic', 'emptyMaterial', 'Environment', 'environment', 'grayPlaster', 'grayPlastic', 'greenGlass', 'greenPlaster', 'greenPlastic', 'Group', 'identity', 'Intersection', 'ltGrayPlaster', 'ltGrayPlastic', 'magentaPlaster', 'magentaPlastic', 'Material', 'mirrorMat', 'POV', 'pov', 'POVWriter', 'Primitive', 'prt', 'purplePlaster', 'purplePlastic', 'redPlaster', 'redPlastic', 'Reference', 'scale', 'Transform', 'Transformable', 'translate', 'whitePlaster', 'whitePlastic', 'xRot', 'xyMirror', 'xzMirror', 'yellowPlaster', 'yellowPlastic', 'yRot', 'yzMirror', 'zRot' ]
 
+def cleanpath(p = '~'):
+    """Return a expanded path given a user file specification."""
+    p = os.path.expanduser(p)
+    p = os.path.expandvars(p)
+    return p
 
 ###############################################################################
 # Ambrosia class tree root.
@@ -65,7 +70,7 @@ class AmbrosiaObject(metaclass=abc.ABCMeta):
         cube = Cube().set("top",(0,50,0))
     Later, we can get this attribute with
         cube.get("top")
-    
+
     One can see the attributes associated with any ambrosia object with
     the describe method:
         describe(cube)
@@ -73,21 +78,21 @@ class AmbrosiaObject(metaclass=abc.ABCMeta):
         ... ("top",(0,50,0)) ...
     """
     __slots__ = [ "_attrs" ]
-    
+
     def __init__(self,description="An ambroisia object."):
         """Initialize object."""
         self._attrs = dict()
         self._attrs['object.name'] = type(self).__name__
         self._attrs['object.description'] = description
-        
+
     def get(self,key):
         """Get attribute value."""
         return self._attrs.get(key,None)
-    
+
     def set(self,key,value):
         """Set attribute value."""
         self._attrs[key] = value
-        
+
     def description(self,d):
         """Provide a human readable description of object."""
         self.set('object.description',d)
@@ -144,7 +149,7 @@ class Transform(AmbrosiaObject):
         t = xRot(90)
     is equivalent to
         t = Transform().xRot(90)
-        
+
     The transform also keeps track of the history (a string) of the
     construction of the transformation.
 
@@ -324,7 +329,7 @@ class Transform(AmbrosiaObject):
         t[1::4] = [y*v for v in t[1::4]]
         t[2::4] = [z*v for v in t[2::4]]
         return self
-    
+
     def translate(self,x,y,z):
         """Append a translation, moving space by x, y, and z."""
         self._appendHistory("translate({},{},{})".format(x,y,z))
@@ -411,79 +416,92 @@ class Environment(AmbrosiaObject):
     Currently, this is managed by a "writer".  See writer/getWriter.
 
     For complex projects (like movies) it's important to set the image
-    folder -- the folder where material images are found, as well as the
-    project folder -- the folder where intermediate files are written.
-    For example, the intermediate frames of a movie are stored in the 
+    folder -- the folder where surface images and textures are found, as well as the
+    project folder -- the folder where rendering files are written.
+    For example, the intermediate frames of a movie are stored in the
     project folder.
     """
-    
+
     def __init__(self,description="A rendering environment."):
         """Initialize the environment."""
         super().__init__(description=description)
-        self.set('environment.imageFolder','images')
-        self.set('environment.projectFolder','images')
+        # by default, we stick images in a folder off the home
+        self.set('environment.imageFolder',os.path.join(userHome,'images'))
+        # by default, results are stored in a temporary folder
+        self.set('environment.projectFolder',tempDir)
+        # the library path provides directories where POV can find source code
         self.set('environment.libraryPath',[])
+        self.set('environment.medium','jupyter' if 'ipykernel' in modules else 'standalone')
 
     def __copy__(self):
         """Create an identical copy of this environment."""
         return super().copy()
 
+    def getMedium(self):
+        """Return the medium associated with the current enviornment.
+        'jupyter' will be returned if we're running in a jupyter-notebook,
+        otherwise 'standalone'."""
+        return self.get('environment.medium')
+
     def writer(self,w):
-        """Set the current writer."""
+        """Set the current writer; typically this is a POVWriter."""
         self.set('environment.writer',w)
 
     def getWriter(self):
         """Get the current writer."""
         return self.get('environment.writer')
-    
-    def imageFolder(self,f):
-        """Set the image folder location."""
-        if f[:1] == '~':
-            f = os.getenv('HOME')+f[1:]
-        self.set('environment.imageFolder',f)
+
+    def imageFolder(self,f=None):
+        """Set the image folder location; by default: ~/images."""
+        f = f or os.path.join(userHome,'images')
+        self.set('environment.imageFolder',cleanpath(f))
         return self
 
     def getImageFolder(self):
         """Get the location of where images are stored."""
         return self.get('environment.imageFolder')
 
-    def projectFolder(self,f):
-        """Set the folder for holding project files."""
-        self.set('environment.projectFolder',f)
+    def projectFolder(self,f=None):
+        """Set the folder for holding project files; typically, a temporary."""
+        f = f or tempDir
+        self.set('environment.projectFolder',cleanpath(f))
         return self
 
     def getProjectFolder(self):
         """Get the name of the folder containing project files."""
         return self.get('environment.projectFolder')
 
-    def libraryFolder(self,f):
-        """Construct the library folder path."""
-        self.get('environment.libraryPath').append(f)
+    def libraryFolder(self,f=None):
+        """Add a folder to the library folder path; used internally."""
+        if f:
+            self.get('environment.libraryPath').append(cleanpath(f))
 
     def getLibraryPath(self):
         """Return a list of library folders."""
         return self.get('environment.libraryPath')
 
     def makeImagePath(self,f=None):
-        """Construct the name of an image, based on environment.
+        """Construct the basename of an image, based on environment.
         If the filename starts with /, it is used, as is.
         otherwise, it is prepended by the imageFolder.
         if the image folder begins with a /, it is used as-is, otherwise
         it is prepended with the current directory.
         """
-        file = [ f or "untitled.png" ]
-        absolute = file[0][:1] == '/'
-        folder = [] if absolute else [ self.getImageFolder() ]
-        absolute = absolute or (folder[0][:1] == '/')
-        here = [] if absolute else [ os.getcwd() or "/home/jovyan/images" ]
-        return '/'.join(here+folder+file)
+        file = cleanpath(f or "untitled")
+        if not os.path.isabs(file):
+            file = cleanpath(os.path.join(self.getImageFolder(),file))
+        if not os.path.isabs(file):
+            file = cleanpath(os.path.join(os.getcwd(),file))
+        return file
 
     def recursionLimit(self,n=1000):
+        """Set the limit of recursion to n (or 1000)."""
         result = self.getRecursionLimit()
         setrecursionlimit(n)
         return result
 
     def getRecursionLimit(self):
+        """Get the current limit on the depth of the recursion."""
         return getrecursionlimit()
 
     def _POV_(self,context):
@@ -498,7 +516,7 @@ environment = Environment(description="Default ambrosia environment.")
 @checkdoc
 class POVWriter(AmbrosiaObject):
     __slots__ = ["_outputFile"]
-    
+
     def __init__(self,description="A POV writing assistant."):
         super().__init__(description=description)
         self._outputFile = None
@@ -506,8 +524,6 @@ class POVWriter(AmbrosiaObject):
     def open(self,filename):
         """Open file for output to hold POV model or init file."""
         self._outputFile = open(filename,"wt")
-#        prt('#version 3.6;\n')
-#        prt('global_settings {assumed_gamma 1.0}\n')
 
     def close(self):
         """Close previously opened POV file."""
@@ -541,7 +557,7 @@ class POVWriter(AmbrosiaObject):
             prt("color rgb <{},{},{},{}>".format(c[0],c[1],c[2],1-c[3]))
         else:
             prt("color rgb <{},{},{},{},{}>".format(c[0],c[1],c[2],1-c[3],c[4]))
-            
+
 
 ###############################################################################
 # The Transformable class
@@ -549,7 +565,7 @@ class POVWriter(AmbrosiaObject):
 @checkdoc
 class Transformable(AmbrosiaObject):
     """This class describes all ambrosia objects that can be transformed."""
-    
+
     def __init__(self,description="A transformable object."):
         """Initialize a Transformable object."""
         super().__init__(description=description)
@@ -571,7 +587,7 @@ class Transformable(AmbrosiaObject):
         """Mix in new tags."""
         self.getTags().update(items)
         return self
-    
+
     def hasTag(self,tag):
         """Check for specific tag."""
         return tag in self.getTags()
@@ -606,7 +622,7 @@ class Transformable(AmbrosiaObject):
             return [(self.getName(),self.getXform().mapPoint(l[name]))]
         else:
             return []
-    
+
     def getXform(self):
         """Return the transform associated with this object."""
         return self.get('xformable.xform')
@@ -651,7 +667,7 @@ class Transformable(AmbrosiaObject):
         """Rotate object about z axis."""
         self.getXform().zRot(angle)
         return self
-    
+
     def scale(self,*args):
         """Scale an object by xs along x axis, etc."""
         if len(args) == 3:
@@ -666,7 +682,7 @@ class Transformable(AmbrosiaObject):
             assert False,"Scale must have 1 or 3 parameters."
         self.getXform().scale(x,y,z)
         return self
-    
+
     def xyMirror(self):
         """Mirror in x-y plane."""
         self.getXform().xyMirror()
@@ -706,7 +722,7 @@ class Transformable(AmbrosiaObject):
 class Primitive(Transformable):
     """Primitive objects are Transformable and can have materials associated
     with them."""
-    
+
     def __init__(self,description="A primitive object."):
         """Initialize the the Primitive object."""
         super().__init__(description=description)
@@ -748,8 +764,9 @@ class Primitive(Transformable):
 # The Context class: a graphics context for ambrosia objects.
 @checkdoc
 class Context(AmbrosiaObject):
-    """This class provides a nested graphics context for ambrosia objects."""
-    
+    """This class provides a nested graphics context for
+    determining default graphics values for ambrosia objects."""
+
     __slots__ = [ "_materialStack", "_transformStack", "_tagStack" ]
     def __init__(self,description="A graphics context."):
         super().__init__(description=description)
@@ -808,7 +825,7 @@ class Context(AmbrosiaObject):
         """Turn on explicit grouping."""
         self.set('context.verboseGrouping',bool)
         return self
-    
+
     def pushXform(self,t):
         """Add a new transform to the transform stack."""
         newTotal = t*self.getTotalXform()
@@ -855,13 +872,15 @@ class Context(AmbrosiaObject):
 @checkdoc
 class Reference(Primitive):
     """Reference objects provide a means to assign transformations or
-    materials to one of several instances of a single objects."""
+    materials to one of several instances of a single objects.
+    Effectively, References are handles to objects that can carry
+    instance-specific graphical information."""
 
     def __init__(self,object=None,description="An ambrosia object reference."):
         """Create a reference to an object."""
         super().__init__(description=description)
         self.object(object)
-    
+
     def getObject(self):
         """Return the object of this reference."""
         return self.get('reference.target')
@@ -994,18 +1013,18 @@ class Group(CSG):
     def __init__(self,description="A group object."):
         super().__init__(description=description)
         self._action("union")
-        
+
 @checkdoc
 class Intersection(CSG):
     """This is the main grouping structure in ambrosia."""
-    def __init__(self,description="A group object."):
+    def __init__(self,description="An intersection object."):
         super().__init__(description=description)
         self._action("intersection")
 
 @checkdoc
 class Difference(CSG):
     """This is the main grouping structure in ambrosia."""
-    def __init__(self,description="A group object."):
+    def __init__(self,description="A difference object."):
         super().__init__(description=description)
         self._action("difference")
 
@@ -1016,23 +1035,33 @@ def POV(obj,context=None):
         context = Context()
     obj._POV_(context)
 
+# Continue to set up the environment.
 pov = POVWriter("The global POV writer.")
 environment.writer(pov)
+
+# A shorthand for printing
 def prt(v):
     """Basic print method w/o newline."""
+    global environment
     of = environment.getWriter().getOutputFile() or stdout
     print(v,end="",file=of)
 
 ###############################################################################
 # Global message sourcing primitives
 def describe(object):
-    object.describe()
+    """Generate a description of an object."""
+    if isinstance(object,AmbrosiaObject):
+        return object.description()
+    else:
+        return "a non-ambrosia object: {}".format(object)
 
 def translate(x,y,z):
+    """Standalone translate generation."""
     t = Transform()
     return t.translate(x,y,z)
 
 def scale(*args):
+    """Standalone scale transform generation."""
     if len(args) == 3:
         (x,y,z) = args
         assert x*y*z != 0, "Warning: scale({},{},{}) includes zero scale.".format(x,y,z)
@@ -1046,30 +1075,38 @@ def scale(*args):
     return Transform().scale(x,y,z)
 
 def xRot(angle):
+    """Standalone x-rotation."""
     t = Transform()
     return t.xRot(angle)
 
 def yRot(angle):
+    """Standalone y-rotation."""
     t = Transform()
     return t.yRot(angle)
 
 def zRot(angle):
+    """Standalone z-rotation."""
     t = Transform()
     return t.zRot(angle)
 
 def xyMirror():
+    """Standalone mirror transform across the xy-plane."""
     t = Transform()
     return t.xyMirror()
 
 def yzMirror():
+    """Standalone mirror transform across the yz-plane."""
     t = Transform()
     return t.yzMirror()
 
 def xzMirror():
+    """Standalone mirror transform across the xz-plane."""
     t = Transform()
     return t.xzMirror()
 
 def product(*xforms):
+    """Compute the product of all the transforms passed as arguments.
+    A simpler technique is to simply multiply the transforms."""
     t = Transform()
     for x in xforms:
         t *= x
@@ -1081,7 +1118,7 @@ def product(*xforms):
 class Color(AmbrosiaObject):
     """This class is used, internally, to represent colors."""
     __slots__ = [ "_red", "_green", "_blue", "_alpha", "_filter" ]
-    
+
     def __init__(self,color=None,description="A color."):
         super().__init__(description = description)
         self.color([1,1,1,1,0] if color is None else color)
@@ -1191,7 +1228,7 @@ class Material(Transformable):
         self.imageType("png")
         self.scale(100)
         self.translate(-50,-50,-50)
-    
+
     def type(self,t):
         """Shorthand for setting values for materials."""
         if t == "plastic":
@@ -1279,7 +1316,7 @@ class Material(Transformable):
     def getTurbulence(self):
         """Get marble turbulence."""
         return self.get('material.turbulence') # defaults to None if not set
-    
+
     def turbulence(self,v):
         """Set marble turbulence."""
         self.set('material.turbulence',v)
@@ -1326,12 +1363,12 @@ class Material(Transformable):
     def getUVMapped(self):
         """Get whether pattern is UV mapped."""
         return self.get('material.UVMapped')
-    
+
     def UVMapped(self,v):
         """Set whether pattern is UV mapped."""
         self.set('material.UVMapped',v)
         return self
-    
+
     def getColor(self):
         """Get the color of the material."""
         return self.get('material.color')
@@ -1493,7 +1530,7 @@ class Material(Transformable):
             POV(c,False)
             prt("]")
         prt("}")
-                
+
     def _POV_pigment(self):
         prt("pigment{")
         if self.getUVMapped():
@@ -1576,7 +1613,7 @@ class Material(Transformable):
             if fp:
                 prt(" fade_power {}".format(fp))
             prt("}")
-    
+
     def _POV_(self,contextIgnored=None):
         prt("texture{")
         self._POV_pigment()

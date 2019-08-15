@@ -12,7 +12,7 @@ POV renderer is supported.
 From outside Python, you can get help on a particular ambrosia name
 with
    pydoc3 ambrosia.name
-Inside Python, you must 
+Inside Python, you must
    from ambrosia import *
 then
    help(name)
@@ -38,31 +38,18 @@ from ambrosia.meshes import __all__ as _meshes_all
 from ambrosia.surfaces import __all__ as _surfaces_all
 from ambrosia.polyhedra import __all__ as _polyhedra_all
 # Synthesize an export list
-__all__ = ['bulb', 'camera', 'cube', 'cylinder', 'cone', 'image', 'scene', 'sphere','license','reset']
+__all__ = ['bulb', 'camera', 'cube', 'cylinder', 'cone', 'image', 'scene', 'sphere','license']
 for x in [ _decorators_all,_basics_all,_objects_all,_cameras_all,_lights_all,_parts_all,_meshes_all,_surfaces_all,_polyhedra_all]:
     __all__.extend(x)
 __all__.sort(key=lambda x: x.lower())
 
 ###############################################################################
 # Globals for scene setup
-sphere = None
-cube = None
-cylinder = None
-cone = None
-bulb = None
-scene = None
-camera = None
-image = None
-
-def reset():
-    global sphere,cube,cylinder,cone,bulb,scene,camera,image
-    sphere = Sphere()
-    cube = Cube()
-    cylinder = Cylinder()
-    cone = Cone()
-    bulb = Light().color(white)
-    scene = Group().add(bulb,translate(0,300,-300))
-    camera = Camera().subject(scene)
-    image = camera.getImage()
-
-reset()
+sphere = Sphere()
+cube = Cube()
+cylinder = Cylinder()
+cone = Cone()
+bulb = Light().color(white)
+scene = Group().add(bulb,translate(0,300,-300))
+camera = Camera().subject(scene)
+image = camera.getImage()

@@ -1,0 +1,6 @@
+#!/bin/bash
+# Script to display an image at a pathname
+
+source `dirname "$0"`/ambrosia-setup
+OUTFILE="${1}"
+${VIEW} "${OUTFILE}" </dev/null >/dev/null 2>/dev/null &

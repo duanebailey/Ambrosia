@@ -58,11 +58,12 @@ The definitions of the basic colors are also provided here:
 """
 import math
 import os
+import tempfile
 from collections import Iterable
 from random import random
 from random import seed as randseed
 
-__all__ = ( 'ambrosiaCopyright', 'ambrosiaHome', 'ambrosiaVersion', 'area', 'black', 'blend', 'blue', 'clamp', 'clampedType', 'closePoly', 'concave', 'concaves', 'convex', 'crossProduct', 'cyan', 'deg2rad', 'distance', 'dkGray', 'docmd', 'docmdWoutput', 'dotProduct', 'e', 'edges', 'fileExists', 'frac', 'fuzz', 'golden', 'gray', 'green', 'halfpi', 'hsv2rgb', 'innerEdges', 'last', 'lowerPoly', 'ltGray', 'magenta', 'morph', 'near', 'normalize', 'openPoly', 'origin', 'perimeter', 'phi', 'pi', 'pi2', 'poly2tri', 'polygon', 'purple', 'raisePoly', 'rad2deg', 'rand', 'red', 'rgb2hsv', 'scriptsDir', 'seed', 'semigon', 'splitBezier', 'sqr', 'sqrDiff', 'triContains', 'triContainsAny', 'triList', 'triangulate', 'triangulateUV', 'triples', 'typeCheck', 'userName', 'userHome', 'vectorClamp', 'vectorDifference', 'vectorLength', 'vectorScale', 'vectorSum', 'white', 'yellow')
+__all__ = ( 'ambrosiaCopyright', 'ambrosiaHome', 'ambrosiaVersion', 'area', 'black', 'blend', 'blue', 'clamp', 'clampedType', 'closePoly', 'concave', 'concaves', 'convex', 'crossProduct', 'cyan', 'deg2rad', 'distance', 'dkGray', 'docmd', 'docmdWoutput', 'dotProduct', 'e', 'edges', 'fileExists', 'frac', 'fuzz', 'golden', 'gray', 'green', 'halfpi', 'hsv2rgb', 'innerEdges', 'last', 'lowerPoly', 'ltGray', 'magenta', 'morph', 'near', 'normalize', 'openPoly', 'origin', 'perimeter', 'phi', 'pi', 'pi2', 'poly2tri', 'polygon', 'purple', 'raisePoly', 'rad2deg', 'rand', 'red', 'rgb2hsv', 'scriptsHome', 'seed', 'semigon', 'splitBezier', 'sqr', 'sqrDiff', 'tempDir', 'triContains', 'triContainsAny', 'triList', 'triangulate', 'triangulateUV', 'triples', 'typeCheck', 'userName', 'userHome', 'vectorClamp', 'vectorDifference', 'vectorLength', 'vectorScale', 'vectorSum', 'white', 'yellow')
 
 ###############################################################################
 # BUILTINS:
@@ -92,10 +93,12 @@ purple = (89/255,17/255,142/255) # Pantone PMS 267 (Williams)
 #purpleA1 = (72/255, 31/255, 145/255) # Pantone PMS 267c (Amherst)
 #purpleA2 = (109/255, 40/255, 170/255) # Pantone PMS 266 (Amherst, vibrant)
 
+# Default environment hooks:
 ambrosiaHome = os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
 userHome = os.getenv('HOME')
 userName = os.getenv('USER')
-scriptsDir = os.path.join(ambrosiaHome,'scripts')
+scriptsHome = os.path.join(ambrosiaHome,'scripts')
+tempDir = tempfile.gettempdir()
 ###############################################################################
 # Definitions
 class clampedType(object):
@@ -557,5 +560,5 @@ def fileExists(f):
 
 ambrosiaVersion = """ambrosia $VERSION"""
 
-ambrosiaCopyright =  """ambrosia (c) 2013-16 duane a. bailey"""
+ambrosiaCopyright =  """ambrosia (c) 2013-19 duane a. bailey"""
 
