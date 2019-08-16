@@ -7,9 +7,11 @@ import os
 import sys
 def pathOf(utility):
     """Determine and return the full path of a unix command, or None."""
-    f = list(os.popen('type -P {}'.format(utility)))
-    return None if not f else f[0].strip()
-
+    f = list(os.popen('type {}'.format(utility)))
+    if not f:
+        return None
+    return f[0].split()[-1]
+    
 execs = { e : pathOf(e) for e in ['bash', 'convert', 'ffmpeg', 'less', 'povray',
            'composite', 'mogrify', 'python3']}
 
