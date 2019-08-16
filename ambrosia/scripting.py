@@ -70,7 +70,6 @@ def povray(model,runlog):
               #runlog,
               os.path.basename(infile), os.path.basename(outfile),
               os.path.basename(logfile), os.path.basename(inifile))
-    print("Executing {}".format(cmd))
     status = os.system(cmd)
     success = os.path.exists(outfile)
     if not success:
@@ -84,7 +83,6 @@ def povray(model,runlog):
             fileAppendText(runlog,"""No image was generated.""")
     if success:
         removeFiles(inifile,infile,logfile)
-    print("result of povray = {} status = {}".format(success,status))
     return success
 
 def pipCompose(model,gravity,runlog):
@@ -122,7 +120,6 @@ def stereoCompose(model,runlog):
 
 def standardRender(model,runlog):
     success = povray(model,runlog)
-    print("result of standard Render = {}".format(success))
     return success
 
 def pipRender(model,gravity,runlog):
@@ -158,7 +155,7 @@ def fileAppendText(basefile,text):
             bf.write(text)
         bf.close()
 
-def fileAppendFile(base,extension):
+def fileAppendFile(basefile,extension):
     with open(basefile,'a') as bf:
         with open(extension) as ef:
             bf.writelines(ef.readlines())
@@ -191,10 +188,6 @@ def render(model,**kargs):
     elif isometric:
         success = isometricRender(model,runlog)
     else:
-        print("""project folder = {}
-        model = {}
-        runlog = {}""".format(projectf,model,runlog))
         success = standardRender(model,runlog)
     result = result if success else None
-    print("result = {}".format(result))
     return result

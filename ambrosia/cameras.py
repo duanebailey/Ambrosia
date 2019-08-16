@@ -274,18 +274,9 @@ class Image(AmbrosiaObject):
             self.advanceFrame()
             return ' --output "{}" --frame {} {}'.format(fp,n,sw)
 
-    def _POV_shootSuffix(self,sfx,*args):
-        """Like POV_shoot, but with additional components in the name."""
-        # The .ini file is always named after the user.
-        # There may be several versions distinguished by suffix.
-        f = os.path.join(environment.getProjectFolder(),userName+sfx+".ini")
-        pov.open(f)
-        self._POV_proof()
-        pov.close()
-
     def _POV_shoot(self,*args):
         """Shoot image to POV-base image."""
-        self._POV_shootSuffix("",*args)
+        self._POV_proof("",*args)
 
     def _POV_proof(self,*args):
         """Proof a POV image."""
@@ -482,15 +473,17 @@ dot-product of the two vectors.  Typically, we set the up vector to (0,1,0).
         # Dump the .ini file
         filebase = os.path.join(environment.getProjectFolder(),userName)
         ids = ambrosia.scripting.uniqueIdString(filebase)
-        filebase += '-' + ids
-        pov.open(filebase+".ini")
-        i._POV_shoot(*args)
+        model = filebase + '-' + ids
+        pov.open(model+".ini")
+        i._POV_()
         pov.close()
         # Dump the .pov file
-        pov.open(filebase+".pov")
+        pov.open(model+".pov")
         self._POV_proof(*args)
         pov.close()
-        resultname = ambrosia.scripting.render(filebase)
+        resultname = ambrosia.scripting.render(model)
+        if resultname:
+            ambrosia.scripting.removeFiles(model+'.runlog')
         self.present(resultname)
 
     def _POV_proof(self,*args):
