@@ -481,6 +481,8 @@ dot-product of the two vectors.  Typically, we set the up vector to (0,1,0).
         fnsw = i.getFileNameSwitches()
         # Dump the .ini file
         filebase = os.path.join(environment.getProjectFolder(),userName)
+        ids = ambrosia.scripting.uniqueIdString(filebase)
+        filebase += '-' + ids
         pov.open(filebase+".ini")
         i._POV_shoot(*args)
         pov.close()

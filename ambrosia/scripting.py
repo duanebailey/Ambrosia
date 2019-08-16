@@ -1,17 +1,36 @@
 #!/usr/bin/env python3
 # (c) 2019 duane a. bailey
 """
-This collection of tools provides support for scripting.
+This collection of utilities eliminates the need for scripts in ambrosia.
+The module is not automatically imported with ambrosia, but is imported
+as needed.
 """
 import os
 import sys
+
+def uniqueIdString(model):
+    """Return a unique number that changes several hundred times per second.
+    These numbers increase over the day.
+    """
+    idfile = model+".id"
+    id = 0
+    if os.path.exists(idfile):
+        with open(idfile) as idf:
+            lines = list(idf)
+            if lines:
+                id = 1+int(lines[0].strip())
+    with open(idfile,'w') as idf:
+        ids = '{:05d}'.format(id)
+        idf.writelines([ids+'\n'])
+    return ids
+
 def pathOf(utility):
     """Determine and return the full path of a unix command, or None."""
     f = list(os.popen('type {}'.format(utility)))
     if not f:
         return None
     return f[0].split()[-1]
-    
+
 execs = { e : pathOf(e) for e in ['bash', 'convert', 'ffmpeg', 'less', 'povray',
            'composite', 'mogrify', 'python3']}
 
