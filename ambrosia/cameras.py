@@ -16,6 +16,7 @@ Classes defined here:
 import abc
 import os
 import math
+import ambrosia.scripting
 from collections import Iterable
 from ambrosia.decorators import *
 from ambrosia.basics import *
@@ -455,8 +456,7 @@ dot-product of the two vectors.  Typically, we set the up vector to (0,1,0).
             img = IPython.display.Image(filename=imagePath,width=w,height=h)
             IPython.display.display(img)
         else:
-            script = os.path.join(scriptsHome,"ambrosia-display")
-            docmd("{} {}".format(script,imagePath))
+            docmd("{} {} &".format('display',imagePath))
 
     def _paramBuilder(self,t,params):
         return [ (blend(t,*p) if isinstance(p,Iterable) else p) for p in params]
@@ -488,12 +488,7 @@ dot-product of the two vectors.  Typically, we set the up vector to (0,1,0).
         pov.open(filebase+".pov")
         self._POV_proof(*args)
         pov.close()
-        script = os.path.join(scriptsHome,"ambrosia-jupyter-pov")
-        if not fileExists(script):
-            print("Cannot find ambrosia's POV script; is ambrosia set up correctly?")
-            exit(1)
-        output = docmdWoutput(script+fnsw)
-        resultname = [ line.split(':')[1].strip() for line in output if line.startswith('OUTFILENAME:')][0]
+        resultname = ambrosia.scripting.render(filebase)
         self.present(resultname)
 
     def _POV_proof(self,*args):
